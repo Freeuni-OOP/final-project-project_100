@@ -33,16 +33,6 @@ CREATE TABLE messages (
                           FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Extension Table: Only populated if messages.msg_type = 'challenge'
--- This eliminates polymorphic NULL columns from the core messages table
-CREATE TABLE challenges (
-                            message_id INT PRIMARY KEY,
-                            quiz_id INT NOT NULL,
-                            challenge_score INT NOT NULL,
-                            FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE,
-                            FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
-);
-
 -- =========================================================================
 -- 2. ADMINISTRATION
 -- =========================================================================
@@ -71,6 +61,14 @@ CREATE TABLE quizzes (
                          allow_practice BOOLEAN DEFAULT TRUE,
                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                          FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE challenges (
+                            message_id INT PRIMARY KEY,
+                            quiz_id INT NOT NULL,
+                            challenge_score INT NOT NULL,
+                            FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE,
+                            FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
 );
 
 CREATE TABLE questions (
@@ -107,7 +105,6 @@ CREATE TABLE quiz_attempts (
                                taken_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
                                FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE,
-git
                                INDEX idx_leaderboard (quiz_id, is_practice, score DESC, time_taken_sec ASC),
                                INDEX idx_user_history (user_id, taken_at DESC)
 );
