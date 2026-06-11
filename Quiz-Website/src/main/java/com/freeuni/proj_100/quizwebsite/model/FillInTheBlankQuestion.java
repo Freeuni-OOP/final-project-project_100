@@ -1,33 +1,22 @@
-package model;
+package com.freeuni.proj_100.quizwebsite.model;
 
 import java.util.List;
 import java.util.Map;
 
-public class MultipleChoiceQuestion implements Question{
+public class FillInTheBlankQuestion implements Question{
     private final int questionID;
     private final int quizID;
     private final String questionPrompt;
     private final String questionType;
     private final List<String> correctAnswers;
-    private final List<String> options;
 
-    public MultipleChoiceQuestion(int questionID, int quizID,
-                                  String questionPrompt, String questionType,
-                                  List<String> correctAnswers, List<String> options){
+    public FillInTheBlankQuestion(int questionID, int quizID,
+                            String questionPrompt, String questionType, List<String> correctAnswers){
         this.questionID = questionID;
         this.quizID = quizID;
         this.questionPrompt = questionPrompt;
         this.questionType = questionType;
         this.correctAnswers = correctAnswers;
-        this.options = options;
-    }
-
-    /**
-     * Gets all multiple choice options.
-     * @return list of all options.
-     */
-    public List<String> getOptions(){
-        return options;
     }
 
     @Override
