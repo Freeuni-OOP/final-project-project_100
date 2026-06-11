@@ -1,33 +1,33 @@
-package model;
+package com.freeuni.proj_100.quizwebsite.model;
 
 import java.util.List;
 import java.util.Map;
 
-public class PictureResponseQuestion implements Question{
+public class MultipleChoiceQuestion implements Question{
     private final int questionID;
     private final int quizID;
     private final String questionPrompt;
     private final String questionType;
-    private final String imageUrl;
     private final List<String> correctAnswers;
+    private final List<String> options;
 
-    public PictureResponseQuestion(int questionID, int quizID,
-                                   String questionPrompt, String questionType,
-                                   String imageUrl, List<String> correctAnswers){
+    public MultipleChoiceQuestion(int questionID, int quizID,
+                                  String questionPrompt, String questionType,
+                                  List<String> correctAnswers, List<String> options){
         this.questionID = questionID;
         this.quizID = quizID;
         this.questionPrompt = questionPrompt;
         this.questionType = questionType;
-        this.imageUrl = imageUrl;
         this.correctAnswers = correctAnswers;
+        this.options = options;
     }
 
     /**
-     * Gets image of the question.
-     * @return image url of the image.
+     * Gets all multiple choice options.
+     * @return list of all options.
      */
-    public String getImageUrl(){
-        return imageUrl;
+    public List<String> getOptions(){
+        return options;
     }
 
     @Override

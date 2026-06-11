@@ -1,4 +1,4 @@
-package model;
+package com.freeuni.proj_100.quizwebsite.model;
 
 import java.util.List;
 
