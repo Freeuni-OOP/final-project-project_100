@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${quiz.title}">Take Quiz</title>
+</head>
+<body>
+
+<h1 th:text="${quiz.title}">Quiz Title</h1>
+<p th:text="${quiz.description}">Quiz Description</p>
+
+<form th:action="@{/quiz/{id}/submit(id=${quiz.id})}" method="post">
+
+    <div th:each="question : ${questions}">
+        <p th:text="${question.questionPrompt}">Question text</p>
+
+        <!-- Multiple choice -->
+        <div th:if="${question.questionType == 'multiple_choice'}">
+            <div th:each="option : ${question.options}">
+                <input type="radio"
+                       th:name="'question_' + ${question.questionID}"
+                       th:value="${option}"
+                       th:text="${option}"/>
+            </div>
+        </div>
+
+        <!-- Text/Fill in the blank/Picture response -->
+        <div th:unless="${question.questionType == 'multiple_choice'}">
+            <input type="text"
+                   th:name="'question_' + ${question.questionID}"
+                   placeholder="Your answer"/>
+        </div>
+
+    </div>
+
+    <button type="submit">Submit Quiz</button>
+</form>
+
+</body>
+</html>
