@@ -3,11 +3,17 @@ package com.freeuni.proj_100.quizwebsite.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Utility component for handling JSON Web Tokens.
@@ -46,12 +52,20 @@ public class JwtUtil {
      * @param username the username to embed as the subject of the token
      * @return a compact, URL-safe JWT string
      */
-    public String generateToken(String username) {
+    public String generateToken(
+            String username,
+            Collection<? extends GrantedAuthority> authorities) {
+
         Date now = new Date();
         Date expDate = new Date(now.getTime() + expirationMs);
 
+        String roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
         return Jwts.builder()
                 .subject(username)
+                .claim("roles", roles)
                 .issuedAt(now)
                 .expiration(expDate)
                 .signWith(secretKey)
@@ -67,6 +81,23 @@ public class JwtUtil {
      */
     public String getUsername(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    /**
+     * Extracts and parses the granted authorities (roles) embedded within the JWT token.
+     *
+     * @param token the signed JWT token string to extract claims from
+     * @return a list of {@link GrantedAuthority} objects representing the user's roles, 
+     * or an empty list if no roles are present or the claim is blank
+     * @throws JwtException if the token signature is invalid or parsing fails
+     */
+    public List<GrantedAuthority> getAuthorities(String token) {
+        String roles = parseClaims(token).get("roles", String.class);
+        if (roles == null || roles.isBlank()) return List.of();
+
+        return Arrays.stream(roles.split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     /**
