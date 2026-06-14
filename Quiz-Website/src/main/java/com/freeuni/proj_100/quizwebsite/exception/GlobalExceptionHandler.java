@@ -2,10 +2,12 @@ package com.freeuni.proj_100.quizwebsite.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,6 +33,29 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of(
                         "error", e.getMessage(),
+                        "timestamp", LocalDateTime.now().toString()
+                ));
+    }
+
+    /**
+     * Intercepts and processes validation exception during authentication process
+     *
+     * @param e the intercepted validation exception
+     * @return a {@link ResponseEntity} with HTTP status 400 containing the error details
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(
+            MethodArgumentNotValidException e) {
+
+        Map<String, String> fieldErrors = new LinkedHashMap<>();
+        e.getBindingResult().getFieldErrors()
+                .forEach(err -> fieldErrors.put(err.getField(), err.getDefaultMessage()));
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "error", "Validation failed",
+                        "fields", fieldErrors,
                         "timestamp", LocalDateTime.now().toString()
                 ));
     }

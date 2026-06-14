@@ -5,6 +5,7 @@ import com.freeuni.proj_100.quizwebsite.dto.LoginRequest;
 import com.freeuni.proj_100.quizwebsite.dto.RegisterRequest;
 import com.freeuni.proj_100.quizwebsite.model.User;
 import com.freeuni.proj_100.quizwebsite.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class AuthController {
      * @return a {@link ResponseEntity} with HTTP status 201 (Created) housing the {@link AuthResponse} token details
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest req) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
         AuthResponse resp = authService.register(req);
         return ResponseEntity.status(201).body(resp);
     }
@@ -58,7 +59,7 @@ public class AuthController {
      * @return a {@link ResponseEntity} with HTTP status 200 (OK) housing the {@link AuthResponse} token details
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
         AuthResponse resp = authService.login(req);
         return ResponseEntity.ok(resp);
     }
