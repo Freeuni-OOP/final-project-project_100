@@ -1,5 +1,6 @@
 package com.freeuni.proj_100.quizwebsite.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
  * Main configuration class for application security settings.
@@ -28,6 +34,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
+
+    @Value("${app.cors.allowed-origin}")
+    private String allowedOrigin;
 
     /**
      * Constructs the security configuration with its required filter and service dependencies.
@@ -52,6 +61,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -74,6 +84,20 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
 
         return provider;
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of(allowedOrigin));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+        src.registerCorsConfiguration("/api/**", config);
+
+        return src;
     }
 
     /**
