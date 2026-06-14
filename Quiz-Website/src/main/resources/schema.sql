@@ -74,7 +74,7 @@ CREATE TABLE challenges (
 CREATE TABLE questions (
                            id INT AUTO_INCREMENT PRIMARY KEY,
                            quiz_id INT NOT NULL,
-                           q_type ENUM('text', 'fill_blank', 'multiple_choice', 'picture') NOT NULL,
+                           q_type ENUM('STANDARD', 'FILL_IN_THE_BLANK', 'MULTIPLE_CHOICE', 'PICTURE_RESPONSE') NOT NULL,
                            prompt TEXT NOT NULL,
                            image_url VARCHAR(255) DEFAULT NULL,
                            sequence_num INT DEFAULT 0,

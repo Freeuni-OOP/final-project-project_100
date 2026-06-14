@@ -21,17 +21,17 @@ public class QuestionFactory {
             throw new IllegalArgumentException("Question type can't be null or empty.");
         }
 
-        return switch (questionType.toLowerCase().trim()) {
-            case "text" ->
+        return switch (questionType.toUpperCase().trim()) {
+            case "STANDARD" ->
                     new StandardQuestion(questionEntity.getId(), questionEntity.getQuiz_id(),
                             questionEntity.getPrompt(), questionType, correctAnswers);
-            case "fill_blank" ->
+            case "FILL_IN_THE_BLANK" ->
                     new FillInTheBlankQuestion(questionEntity.getId(), questionEntity.getQuiz_id(),
                             questionEntity.getPrompt(), questionType, correctAnswers);
-            case "multiple_choice" ->
+            case "MULTIPLE_CHOICE" ->
                     new MultipleChoiceQuestion(questionEntity.getId(), questionEntity.getQuiz_id(),
                             questionEntity.getPrompt(), questionType, correctAnswers, options);
-            case "picture" ->
+            case "PICTURE_RESPONSE" ->
                     new PictureResponseQuestion(questionEntity.getId(), questionEntity.getQuiz_id(),
                             questionEntity.getPrompt(), questionType, questionEntity.getImage_url(), correctAnswers);
             default -> throw new IllegalArgumentException("Unknown question type: " + questionType);
