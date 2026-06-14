@@ -67,11 +67,13 @@ public class AuthController {
      * Retrieves basic contextual profile details of the currently authenticated principal.
      * Uses Spring Security's execution thread parameters to inject active session references.
      *
-     * @param user the authenticated {@link User} entity principal injected via {@link AuthenticationPrincipal}
+     * @param username the authenticated user's username principal injected via {@link AuthenticationPrincipal}
      * @return a {@link ResponseEntity} containing a key-value structure of basic non-sensitive account data fields
      */
     @GetMapping("/me")
-    public ResponseEntity<Map<String, Object>> me(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Map<String, Object>> me(@AuthenticationPrincipal String username) {
+        User user = authService.getUserByUsername(username);
+
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "username", user.getUsername(),
