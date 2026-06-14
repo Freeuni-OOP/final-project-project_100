@@ -45,18 +45,18 @@ public class AuthService {
      * @throws AuthException if the requested username or email has already been taken in the database
      */
     public AuthResponse register(RegisterRequest req) {
-        if (userRepo.existsByUsername(req.getUsername())) {
-            throw new AuthException("Username already taken: " + req.getUsername());
+        if (userRepo.existsByUsername(req.username())) {
+            throw new AuthException("Username already taken: " + req.username());
         }
 
-        if (userRepo.existsByEmail(req.getEmail())) {
-            throw new AuthException("Email already registered: " + req.getEmail());
+        if (userRepo.existsByEmail(req.email())) {
+            throw new AuthException("Email already registered: " + req.email());
         }
 
         User user = new User();
-        user.setUsername(req.getUsername());
-        user.setEmail(req.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
+        user.setUsername(req.username());
+        user.setEmail(req.email());
+        user.setPasswordHash(passwordEncoder.encode(req.password()));
 
         User savedUser = userRepo.save(user);
         String token = jwtUtil.generateToken(savedUser.getUsername(), savedUser.getAuthorities());
@@ -73,10 +73,10 @@ public class AuthService {
      * @throws AuthException if the provided username does not exist or password hashes do not match
      */
     public AuthResponse login(LoginRequest req) {
-        User user = userRepo.findByUsername(req.getUsername())
+        User user = userRepo.findByUsername(req.username())
                 .orElseThrow(() -> new AuthException("Invalid username or password"));
 
-        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(req.password(), user.getPassword())) {
             throw new AuthException("Invalid username or password");
         }
 
