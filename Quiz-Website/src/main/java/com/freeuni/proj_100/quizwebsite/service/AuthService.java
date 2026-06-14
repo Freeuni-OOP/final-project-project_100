@@ -84,4 +84,15 @@ public class AuthService {
 
         return new AuthResponse(user.getId(), user.getUsername(), token);
     }
+
+    /**
+     * Helper function for getting the User by username
+     *
+     * @param username unique username
+     * @return User object with the specified unique username
+     */
+    public User getUserByUsername(String username) {
+        return userRepo.findByUsername(username)
+                .orElseThrow(() -> new AuthException("User not found"));
+    }
 }
