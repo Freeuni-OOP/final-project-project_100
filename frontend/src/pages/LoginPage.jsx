@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios.js';
 
+import styles from '../styles/auth.module.css';
+
 export default function LoginPage() {
     const { login } = useAuth();
     const navigate = useNavigate();
