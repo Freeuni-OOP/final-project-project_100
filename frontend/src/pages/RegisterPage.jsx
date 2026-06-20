@@ -5,7 +5,7 @@ import api from '../api/axios.js';
 
 import styles from '../styles/auth.module.css';
 
-export default function RegsterPage() {
+export default function RegisterPage() {
     const { login } = useAuth();
     const navigate = useNavigate();
 
