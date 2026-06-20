@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
         const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
         if (storedUser && storedToken) {
-            return JSON.stringify(storedUser);
+            return JSON.parse(storedUser);
         }
 
         localStorage.removeItem("user");
