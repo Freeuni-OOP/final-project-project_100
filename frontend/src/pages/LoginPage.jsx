@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 import styles from '../styles/auth.module.css';
 
@@ -9,18 +10,18 @@ export default function LoginPage() {
     const navigate = useNavigate();
 
     const [form, setForm] = useState({ username: "", password: "" });
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
-        setForm({ username: e.target.name, password: e.target.password });
-        setError("");
+        const { name, value } = e.target
+        setForm(prev => ({ ...prev, [name]: value }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
+        setErrors({});
 
         try {
             const resp = await api.post("/auth/login", form);
@@ -28,52 +29,52 @@ export default function LoginPage() {
             login(token, { id: userId, username });
             navigate("/home");
         } catch (err) {
-            setError(err.response?.data?.error || "Login failed, please try again");
+            const data = err.response?.data;
+            setErrors({ general: data?.error || "Login failed, please try again" });
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div style={styles.page}>
-            <div style={styles.card}>
-                <h2 style={styles.title}>Sign in</h2>
-                {error && <div style={styles.error}>{error}</div>}
+        <div className={styles.page}>
+            <div className={styles.card}>
+                <h2 className={styles.title}>Sign in</h2>
+                {errors.general && <div className={styles.error}>{errors.general}</div>}
 
-                <form onSubmit={handleSubmit} style={styles.form}>
-                    <label style={styles.label}>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <label className={styles.label}>
                         Username
                         <input
-                            style={styles.input}
+                            className={styles.input}
                             name="username"
                             value={form.username}
                             onChange={handleChange}
-                            autoComplete="username"
+                            autoComplete="off"
                             required
                         />
                     </label>
 
-                    <label style={styles.label}>
+                    <label className={styles.label}>
                         Password
                         <input
-                            style={styles.input}
+                            className={styles.input}
                             name="password"
                             type="password"
                             value={form.password}
                             onChange={handleChange}
-                            autoComplete="current-password"
                             required
                         />
                     </label>
 
-                    <button style={styles.button} type="submit" disabled={loading}>
+                    <button className={styles.button} type="submit" disabled={loading}>
                         {loading ? 'Signing in...' : 'Sign in'}
                     </button>
                 </form>
 
-                <p style={styles.footer}>
+                <p className={styles.footer}>
                     Don't have an account?{' '}
-                    <Link to="/register" style={styles.link}>Register</Link>
+                    <Link to="/register" className={styles.link}>Register</Link>
                 </p>
             </div>
         </div>

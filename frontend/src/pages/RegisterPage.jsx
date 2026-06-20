@@ -14,14 +14,14 @@ export default function RegsterPage() {
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-        setErrors({ ...errors, [e.target.name]: "" });
+        const { name, value } = e.target
+        setForm(prev => ({ ...prev, [name]: value }))
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setErrors("");
+        setErrors({});
 
         try {
             const resp = await api.post("/auth/register", form);
@@ -41,61 +41,58 @@ export default function RegsterPage() {
     };
 
     return (
-        <div style={styles.page}>
-            <div style={styles.card}>
-                <h1 style={styles.title}>Create account</h1>
-                {errors.general && <div style={styles.error}>{errors.general}</div>}
+        <div className={styles.page}>
+            <div className={styles.card}>
+                <h2 className={styles.title}>Create account</h2>
+                {errors.general && <div className={styles.error}>{errors.general}</div>}
 
-                <form onSubmit={handleSubmit} style={styles.form}>
-                    <label style={styles.label}>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <label className={styles.label}>
                         Username
                         <input
-                            style={{...styles.input, ...(errors.username ? styles.inputError : {})}}
+                            className={`${styles.input} ${errors.username ? styles.inputError : ""}`}
                             name="username"
                             value={form.username}
                             onChange={handleChange}
-                            autoComplete="username"
                             required
                         />
-                        {errors.username && <span style={styles.fieldError}>{errors.username}</span>}
+                        {errors.username && <span className={styles.fieldError}>{errors.username}</span>}
                     </label>
 
-                    <label style={styles.label}>
+                    <label className={styles.label}>
                         Email
                         <input
-                            style={{...styles.input, ...(errors.email ? styles.inputError : {})}}
+                            className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
                             name="email"
                             type="email"
                             value={form.email}
                             onChange={handleChange}
-                            autoComplete="email"
                             required
                         />
-                        {errors.email && <span style={styles.fieldError}>{errors.email}</span>}
+                        {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
                     </label>
 
-                    <label style={styles.label}>
+                    <label className={styles.label}>
                         Password
                         <input
-                            style={{...styles.input, ...(errors.password ? styles.inputError : {})}}
+                            className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
                             name="password"
                             type="password"
                             value={form.password}
                             onChange={handleChange}
-                            autoComplete="new-password"
                             required
                         />
-                        {errors.password && <span style={styles.fieldError}>{errors.password}</span>}
+                        {errors.password && <span className={styles.fieldError}>{errors.password}</span>}
                     </label>
 
-                    <button style={styles.button} type="submit" disabled={loading}>
+                    <button className={styles.button} type="submit" disabled={loading}>
                         {loading ? 'Creating account...' : 'Create account'}
                     </button>
                 </form>
 
-                <p style={styles.footer}>
+                <p className={styles.footer}>
                     Already have an account?{' '}
-                    <Link to="/login" style={styles.link}>Sign in</Link>
+                    <Link to="/login" className={styles.link}>Sign in</Link>
                 </p>
             </div>
         </div>
