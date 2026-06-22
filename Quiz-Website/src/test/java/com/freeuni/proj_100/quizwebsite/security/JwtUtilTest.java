@@ -1,6 +1,5 @@
-package com.freeuni.proj_100.quizwebsite;
+package com.freeuni.proj_100.quizwebsite.security;
 
-import com.freeuni.proj_100.quizwebsite.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
