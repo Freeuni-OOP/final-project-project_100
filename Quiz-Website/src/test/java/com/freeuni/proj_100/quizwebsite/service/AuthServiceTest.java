@@ -1,4 +1,4 @@
-package com.freeuni.proj_100.quizwebsite;
+package com.freeuni.proj_100.quizwebsite.service;
 
 import com.freeuni.proj_100.quizwebsite.dto.AuthResponse;
 import com.freeuni.proj_100.quizwebsite.dto.LoginRequest;
@@ -7,7 +7,6 @@ import com.freeuni.proj_100.quizwebsite.exception.AuthException;
 import com.freeuni.proj_100.quizwebsite.model.User;
 import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import com.freeuni.proj_100.quizwebsite.security.JwtUtil;
-import com.freeuni.proj_100.quizwebsite.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
