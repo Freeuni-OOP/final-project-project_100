@@ -1,31 +1,22 @@
 package com.freeuni.proj_100.quizwebsite.repository;
 
 import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 /**
- * Repository responsible for accessing question records.
+ * Repository for reading and writing quiz question rows.
  */
 public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer> {
-
     /**
-     * Returns all questions belonging to a specific quiz.
+     * Finds quiz questions in stable display order and fetches answers together.
+     * The entity graph avoids the N+1 query problem while building runtime Question objects.
      *
-     * Questions are ordered by sequence number so that the quiz
-     * appears in the intended order.
-     *
-     * @param quizId ID of the quiz
-     * @return ordered list of question entities
+     * @param quizId parent quiz identifier.
+     * @return ordered questions with their answers loaded.
      */
-    @Query(value = """
-            SELECT *
-            FROM questions
-            WHERE quiz_id = :quizId
-            ORDER BY sequence_num ASC, id ASC
-            """, nativeQuery = true)
-    List<QuestionEntity> findAllForQuiz(@Param("quizId") int quizId);
+    @EntityGraph(attributePaths = "answers")
+    List<QuestionEntity> findByQuizIdOrderBySequenceNumAscIdAsc(int quizId);
 }

@@ -4,7 +4,6 @@ import com.freeuni.proj_100.quizwebsite.model.AnswerEntity;
 import com.freeuni.proj_100.quizwebsite.model.Question;
 import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
 import com.freeuni.proj_100.quizwebsite.model.QuestionFactory;
-import com.freeuni.proj_100.quizwebsite.repository.AnswerRepository;
 import com.freeuni.proj_100.quizwebsite.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,40 +14,35 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Service responsible for loading questions and evaluating quizzes.
+ * Service responsible for loading quiz questions and evaluating submitted answers.
  */
 @Service
 public class QuestionService {
-
+    /**
+     * Repository used to fetch question entities together with their answers.
+     */
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
 
     /**
-     * Constructs a QuestionService with its dependencies.
+     * Creates a question service with its repository dependency.
      *
-     * @param questionRepository repository for question entities
-     * @param answerRepository repository for answer entities
+     * @param questionRepository repository for question persistence.
      */
-    public QuestionService(QuestionRepository questionRepository,
-                           AnswerRepository answerRepository) {
+    public QuestionService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
-        this.answerRepository = answerRepository;
     }
 
     /**
-     * Retrieves all questions belonging to a quiz.
+     * Loads all questions for a quiz and converts them into runtime Question objects.
      *
-     * Optionally randomizes their order.
-     *
-     * @param quizId ID of the quiz
-     * @param randomized true if question order should be shuffled
-     * @return list of Question objects
+     * @param quizId parent quiz identifier.
+     * @param randomized whether returned question order should be shuffled.
+     * @return list of runtime question objects.
      */
     @Transactional(readOnly = true)
     public List<Question> getQuestionsForQuiz(int quizId, boolean randomized) {
-
         List<Question> questions = new ArrayList<>(
-                questionRepository.findAllForQuiz(quizId)
+                questionRepository.findByQuizIdOrderBySequenceNumAscIdAsc(quizId)
                         .stream()
                         .map(this::toQuestion)
                         .toList()
@@ -62,18 +56,14 @@ public class QuestionService {
     }
 
     /**
-     * Computes the score obtained by a user.
+     * Scores a quiz submission by checking each submitted answer.
      *
-     * Each question checks whether the submitted parameters
-     * correspond to its correct answer(s).
-     *
-     * @param quizId ID of the quiz
-     * @param params request parameters containing user answers
-     * @return number of correctly answered questions
+     * @param quizId parent quiz identifier.
+     * @param params submitted request parameters keyed by "question_[id]".
+     * @return number of correctly answered questions.
      */
     @Transactional(readOnly = true)
     public int scoreQuiz(int quizId, Map<String, String[]> params) {
-
         int score = 0;
 
         for (Question question : getQuestionsForQuiz(quizId, false)) {
@@ -86,29 +76,24 @@ public class QuestionService {
     }
 
     /**
-     * Converts a database entity into a domain Question object.
+     * Converts a database question entity into the matching runtime Question implementation.
      *
-     * Loads correct answers and, for multiple-choice questions,
-     * loads all available options.
-     *
-     * @param entity question entity
-     * @return constructed Question object
+     * @param entity database question entity with answers already loaded.
+     * @return runtime question object.
      */
     private Question toQuestion(QuestionEntity entity) {
+        List<AnswerEntity> answers = entity.getAnswers() == null
+                ? List.of()
+                : entity.getAnswers();
 
-        List<String> correctAnswers =
-                answerRepository.findCorrectForQuestion(entity.getId())
-                        .stream()
-                        .map(AnswerEntity::getAnswerText)
-                        .toList();
+        List<String> correctAnswers = answers.stream()
+                .filter(AnswerEntity::isCorrect)
+                .map(AnswerEntity::getAnswerText)
+                .toList();
 
-        List<String> options =
-                "MULTIPLE_CHOICE".equalsIgnoreCase(entity.getQ_type())
-                        ? answerRepository.findAllForQuestion(entity.getId())
-                        .stream()
-                        .map(AnswerEntity::getAnswerText)
-                        .toList()
-                        : List.of();
+        List<String> options = "MULTIPLE_CHOICE".equalsIgnoreCase(entity.getQ_type())
+                ? answers.stream().map(AnswerEntity::getAnswerText).toList()
+                : List.of();
 
         return QuestionFactory.createQuestion(entity, correctAnswers, options);
     }
