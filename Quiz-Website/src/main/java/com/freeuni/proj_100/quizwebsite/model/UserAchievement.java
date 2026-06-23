@@ -16,9 +16,10 @@ public class UserAchievement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** ID of the user who earned the achievement. */
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    /** The user entity who earned the achievement (Many-to-One relationship). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     /** The specific type or name of the achievement earned. */
     @Column(name = "achievement_type", nullable = false)
@@ -32,10 +33,13 @@ public class UserAchievement {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
     public String getAchievementType() { return achievementType; }
     public void setAchievementType(String type) { this.achievementType = type; }
+
     public LocalDateTime getEarnedAt() { return earnedAt; }
     public void setEarnedAt(LocalDateTime earnedAt) { this.earnedAt = earnedAt; }
 }

@@ -16,13 +16,14 @@ public class QuizAttempt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** ID of the user who took the quiz. */
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    /** The user entity who took the quiz (Many-to-One relationship). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     /** ID of the quiz that was taken. */
     @Column(name = "quiz_id", nullable = false)
-    private int quizId;
+    private Long quizId;
 
     /** The final score achieved on the attempt. */
     @Column(nullable = false)
@@ -44,16 +45,22 @@ public class QuizAttempt {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public int getQuizId() { return quizId; }
-    public void setQuizId(int quizId) { this.quizId = quizId; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Long getQuizId() { return quizId; }
+    public void setQuizId(Long quizId) { this.quizId = quizId; }
+
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }
+
     public int getTimeTakenSec() { return timeTakenSec; }
     public void setTimeTakenSec(int timeTakenSec) { this.timeTakenSec = timeTakenSec; }
+
     public boolean isPractice() { return isPractice; }
-    public void setPractice(boolean practice) { isPractice = practice; }
+    public void setPractice(boolean practice) { this.isPractice = practice; }
+
     public LocalDateTime getTakenAt() { return takenAt; }
     public void setTakenAt(LocalDateTime takenAt) { this.takenAt = takenAt; }
 }

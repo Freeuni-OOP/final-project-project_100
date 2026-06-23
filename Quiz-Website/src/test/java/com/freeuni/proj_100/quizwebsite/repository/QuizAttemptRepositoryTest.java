@@ -1,20 +1,23 @@
 package com.freeuni.proj_100.quizwebsite.repository;
 
 import com.freeuni.proj_100.quizwebsite.model.QuizAttempt;
+import com.freeuni.proj_100.quizwebsite.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-// force h2 to act like mysql and skip user foreign key checks
 @TestPropertySource(properties = {
         "spring.datasource.url=jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;REFERENTIAL_INTEGRITY=FALSE",
         "spring.datasource.driver-class-name=org.h2.Driver"
@@ -25,53 +28,74 @@ class QuizAttemptRepositoryTest {
     private QuizAttemptRepository repository;
 
     @Test
-    void filtersPracticeAndOtherUsers() {
+    void testFiltersPracticeAndOtherUsers() {
+        User target = new User(); target.setId(1L);
+        User other = new User(); other.setId(99L);
+
         QuizAttempt real = new QuizAttempt();
-        real.setUserId(1L);
-        real.setPractice(false); // target
+        real.setUser(target); real.setQuizId(10L); real.setPractice(false);
 
         QuizAttempt practice = new QuizAttempt();
-        practice.setUserId(1L);
-        practice.setPractice(true); // ignore
+        practice.setUser(target); practice.setQuizId(10L); practice.setPractice(true);
 
-        QuizAttempt otherUser = new QuizAttempt();
-        otherUser.setUserId(99L);
-        otherUser.setPractice(false); // ignore
+        QuizAttempt otherUserAttempt = new QuizAttempt();
+        otherUserAttempt.setUser(other); otherUserAttempt.setQuizId(10L); otherUserAttempt.setPractice(false);
 
         repository.save(real);
         repository.save(practice);
-        repository.save(otherUser);
+        repository.save(otherUserAttempt);
 
         List<QuizAttempt> history = repository.getUserHistory(1L);
 
-        // should only fetch the 1 target
         assertEquals(1, history.size());
         assertFalse(history.get(0).isPractice());
-        assertEquals(1L, history.get(0).getUserId());
+        assertEquals(1L, history.get(0).getUser().getId());
     }
 
     @Test
-    void returnsEmptyListIfNoAttempts() {
-        List<QuizAttempt> history = repository.getUserHistory(999L); // ghost user
-
+    void testReturnsEmptyListIfNoAttempts() {
+        List<QuizAttempt> history = repository.getUserHistory(999L);
         assertEquals(0, history.size());
     }
 
     @Test
-    void returnsMultipleAttempts() {
-        QuizAttempt a1 = new QuizAttempt();
-        a1.setUserId(1L);
-        a1.setPractice(false);
+    void testOrdersHistoryByMostRecent() {
+        User player = new User(); player.setId(1L);
 
-        QuizAttempt a2 = new QuizAttempt();
-        a2.setUserId(1L);
-        a2.setPractice(false);
+        QuizAttempt oldAttempt = new QuizAttempt();
+        oldAttempt.setUser(player); oldAttempt.setQuizId(5L); oldAttempt.setPractice(false);
+        oldAttempt.setTakenAt(LocalDateTime.now().minusDays(2));
 
-        repository.save(a1);
-        repository.save(a2);
+        QuizAttempt newAttempt = new QuizAttempt();
+        newAttempt.setUser(player); newAttempt.setQuizId(5L); newAttempt.setPractice(false);
+        newAttempt.setTakenAt(LocalDateTime.now());
+
+        repository.save(oldAttempt);
+        repository.save(newAttempt);
 
         List<QuizAttempt> history = repository.getUserHistory(1L);
 
         assertEquals(2, history.size());
+        // The newest one should be first in the list
+        assertTrue(history.get(0).getTakenAt().isAfter(history.get(1).getTakenAt()));
+    }
+
+    @Test
+    void testAppliesLeaderboardPaginationAndFilters() {
+        User player = new User(); player.setId(1L);
+
+        QuizAttempt highscore = new QuizAttempt();
+        highscore.setUser(player); highscore.setQuizId(5L); highscore.setScore(100); highscore.setPractice(false);
+
+        QuizAttempt practiceScore = new QuizAttempt();
+        practiceScore.setUser(player); practiceScore.setQuizId(5L); practiceScore.setScore(200); practiceScore.setPractice(true);
+
+        repository.save(highscore);
+        repository.save(practiceScore);
+
+        List<QuizAttempt> leaderboard = repository.getLeaderboard(5L, PageRequest.of(0, 10));
+
+        assertEquals(1, leaderboard.size());
+        assertEquals(100, leaderboard.get(0).getScore());
     }
 }

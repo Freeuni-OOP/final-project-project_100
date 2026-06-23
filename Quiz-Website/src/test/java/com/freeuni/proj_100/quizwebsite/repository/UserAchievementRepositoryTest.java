@@ -1,5 +1,6 @@
 package com.freeuni.proj_100.quizwebsite.repository;
 
+import com.freeuni.proj_100.quizwebsite.model.User;
 import com.freeuni.proj_100.quizwebsite.model.UserAchievement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-// force h2 to act like mysql and skip user foreign key checks
 @TestPropertySource(properties = {
         "spring.datasource.url=jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;REFERENTIAL_INTEGRITY=FALSE",
         "spring.datasource.driver-class-name=org.h2.Driver"
@@ -24,34 +24,32 @@ class UserAchievementRepositoryTest {
     private UserAchievementRepository repository;
 
     @Test
-    void findsAchievementsByUserId() {
-        UserAchievement target1 = new UserAchievement();
-        target1.setUserId(1L);
-        target1.setAchievementType("amateur_author");
+    void testFindsAchievementsForSpecificUserOnly() {
+        User target = new User(); target.setId(1L);
+        User other = new User(); other.setId(99L);
 
-        UserAchievement target2 = new UserAchievement();
-        target2.setUserId(1L);
-        target2.setAchievementType("quiz_machine");
+        UserAchievement a1 = new UserAchievement();
+        a1.setUser(target); a1.setAchievementType("amateur_author");
 
-        UserAchievement otherUser = new UserAchievement();
-        otherUser.setUserId(99L); // ignore
-        otherUser.setAchievementType("amateur_author");
+        UserAchievement a2 = new UserAchievement();
+        a2.setUser(target); a2.setAchievementType("quiz_machine");
 
-        repository.save(target1);
-        repository.save(target2);
-        repository.save(otherUser);
+        UserAchievement a3 = new UserAchievement();
+        a3.setUser(other); a3.setAchievementType("amateur_author");
 
-        List<UserAchievement> achievements = repository.findByUserId(1L);
+        repository.save(a1);
+        repository.save(a2);
+        repository.save(a3);
 
-        // should only fetch the 2 targets for user 1
+        List<UserAchievement> achievements = repository.findByUser_Id(1L);
+
         assertEquals(2, achievements.size());
-        assertEquals(1L, achievements.get(0).getUserId());
+        assertEquals(1L, achievements.get(0).getUser().getId());
     }
 
     @Test
-    void returnsEmptyListIfNoAchievements() {
-        List<UserAchievement> achievements = repository.findByUserId(999L); // ghost user
-
+    void testReturnsEmptyListIfNoAchievements() {
+        List<UserAchievement> achievements = repository.findByUser_Id(999L);
         assertEquals(0, achievements.size());
     }
 }
