@@ -61,7 +61,7 @@ public class AuthService {
         User savedUser = userRepo.save(user);
         String token = jwtUtil.generateToken(savedUser.getUsername(), savedUser.getAuthorities());
 
-        return new AuthResponse(savedUser.getId(), savedUser.getUsername(), token);
+        return new AuthResponse(savedUser.getId(), savedUser.getUsername(), token, savedUser.isAdmin());
     }
 
     /**
@@ -82,7 +82,7 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getAuthorities());
 
-        return new AuthResponse(user.getId(), user.getUsername(), token);
+        return new AuthResponse(user.getId(), user.getUsername(), token, user.isAdmin());
     }
 
     /**
