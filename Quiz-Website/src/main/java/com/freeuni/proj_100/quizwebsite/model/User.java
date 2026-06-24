@@ -57,6 +57,9 @@ public class User implements UserDetails {
     @Column(nullable=false)
     private boolean isAdmin = false;
 
+    @Column(nullable=false)
+    private int tokenVersion = 0;
+
     public User() {}
 
     /**
@@ -79,6 +82,11 @@ public class User implements UserDetails {
         this.isAdmin = isAdmin;
     }
 
+    public void promoteToAdmin() {
+        this.isAdmin = true;
+        this.tokenVersion++;
+    }
+
     /**
      * JPA lifecycle callback method that automatically sets the {@code createdAt} 
      * timestamp to the current date and time before the entity is persisted.
@@ -91,13 +99,13 @@ public class User implements UserDetails {
     public Long getId() { return id; }
     public String getEmail() { return email; }
     public boolean isAdmin() { return isAdmin; }    // JPA expects 'isAdmin' and not 'getIsAdmin'
+    public int getTokenVersion() { return tokenVersion; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public void setId(Long id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setEmail(String email) { this.email = email; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-    public void setAdmin(boolean admin) { this.isAdmin = admin; }
 
     /* -- UserDetails interface -- */
 

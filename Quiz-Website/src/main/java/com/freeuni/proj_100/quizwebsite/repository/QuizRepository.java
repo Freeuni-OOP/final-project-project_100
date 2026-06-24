@@ -8,12 +8,12 @@ import java.util.List;
  * Repository interface for Quiz entity.
  * Provides basic CRUD operations and custom queries for quizzes.
  */
-public interface QuizRepository extends JpaRepository<Quiz, Integer> {
+public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     /**
      * Finds all quizzes created by a specific user.
      * @param creatorId the ID of the quiz creator.
      * @return list of quizzes created by that user.
      */
-    List<Quiz> findByCreatorId(int creatorId);
+    List<Quiz> findByCreatorId(Long creatorId);
 }
