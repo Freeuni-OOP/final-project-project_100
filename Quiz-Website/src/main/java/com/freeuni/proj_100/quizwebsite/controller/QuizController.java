@@ -30,7 +30,7 @@ public class QuizController {
      * Accessible at: GET /quiz/{id}
      */
     @GetMapping("/{id}")
-    public String quizPage(@PathVariable int id, Model model) {
+    public String quizPage(@PathVariable Long id, Model model) {
         Optional<Quiz> quiz = quizService.getQuizById(id);
         if (quiz.isEmpty()) {
             return "redirect:/";
@@ -44,7 +44,7 @@ public class QuizController {
      * Accessible at: GET /quiz/{id}/take
      */
     @GetMapping("/{id}/take")
-    public String takeQuiz(@PathVariable int id, Model model) {
+    public String takeQuiz(@PathVariable Long id, Model model) {
         Optional<Quiz> quiz = quizService.getQuizById(id);
         if (quiz.isEmpty()) {
             return "redirect:/";
@@ -58,7 +58,7 @@ public class QuizController {
      * Accessible at: POST /quiz/{id}/submit
      */
     @PostMapping("/{id}/submit")
-    public String submitQuiz(@PathVariable int id,
+    public String submitQuiz(@PathVariable Long id,
                              @RequestParam java.util.Map<String, String> answers,
                              Model model) {
         Optional<Quiz> quiz = quizService.getQuizById(id);
