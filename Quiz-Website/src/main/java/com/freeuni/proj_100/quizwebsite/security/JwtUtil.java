@@ -85,6 +85,10 @@ public class JwtUtil {
         return parseClaims(token).getSubject();
     }
 
+    /**
+     * Extracts the token version from JWT token.
+     *
+     */
     public int getVersion(String token) {
         return parseClaims(token).get("version", Integer.class);
     }

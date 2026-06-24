@@ -18,6 +18,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service class containing business logic for administrative operations.
+ * <p>
+ * This service is secured globally and requires the caller to possess the {@code 'ROLE_ADMIN'} authority.
+ * It manages users, quizzes, system-wide announcements, and aggregates site telemetry statistics.
+ * </p>
+ */
 @Service
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminService {
@@ -27,6 +34,14 @@ public class AdminService {
     private final QuizAttemptRepository quizAttemptRepo;
     private final AnnouncementRepository announcementRepo;
 
+    /**
+     * Constructs an {@code AdminService} with all required data repositories.
+     *
+     * @param userRepo         the repository for user persistence operations
+     * @param quizRepo         the repository for quiz management
+     * @param quizAttemptRepo  the repository for tracking quiz history and attempts
+     * @param announcementRepo the repository for platform announcements
+     */
     public AdminService(
             UserRepository userRepo,
             QuizRepository quizRepo,
@@ -39,6 +54,14 @@ public class AdminService {
         this.quizAttemptRepo = quizAttemptRepo;
     }
 
+    /**
+     * Creates and saves a new system-wide announcement.
+     *
+     * @param req      the payload containing the title and content of the announcement
+     * @param username the username of the administrator creating the entry
+     * @return an {@link AnnouncementDto} representation of the newly created entity
+     * @throws AuthException if the administrator account cannot be verified in the system
+     */
     public AnnouncementDto createAnnouncement(
             CreateAnnouncementRequest req,
             String username
@@ -56,6 +79,11 @@ public class AdminService {
         return toDto(saved);
     }
 
+    /**
+     * Retrieves all platform announcements sorted chronologically by creation timestamp in descending order.
+     *
+     * @return a {@link List} of {@link AnnouncementDto} records
+     */
     public List<AnnouncementDto> getAllAnnouncements() {
         return announcementRepo.findAllByOrderByCreatedAtDesc()
                 .stream()
@@ -63,6 +91,16 @@ public class AdminService {
                 .toList();
     }
 
+    /**
+     * Deletes a user from the platform database by their unique ID.
+     * <p>
+     * Guarded by a transaction. This action will fail intentionally if the target user 
+     * is also an administrator.
+     * </p>
+     *
+     * @param userId the unique identifier of the user account to remove
+     * @throws AuthException if the target user is not found, or if they hold administrative rights
+     */
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepo.findById(userId)
@@ -75,6 +113,12 @@ public class AdminService {
         userRepo.delete(user);
     }
 
+    /**
+     * Permanently removes a quiz from the system.
+     *
+     * @param quizId the unique identifier of the quiz to delete
+     * @throws ResourceNotFoundException if no quiz matches the provided identifier
+     */
     @Transactional
     public void deleteQuiz(Long quizId) {
         if (!quizRepo.existsById(quizId)) {
@@ -84,6 +128,12 @@ public class AdminService {
         quizRepo.deleteById(quizId);
     }
 
+    /**
+     * Wipes out all history, records, and statistics of user submissions for a specific quiz.
+     *
+     * @param quizId the unique identifier of the target quiz
+     * @throws ResourceNotFoundException if the quiz record does not exist
+     */
     @Transactional
     public void clearQuizHistory(Long quizId) {
         if (!quizRepo.existsById(quizId)) {
@@ -93,6 +143,12 @@ public class AdminService {
         quizAttemptRepo.deleteByQuizId(quizId);
     }
 
+    /**
+     * Promotes an existing platform user account to have administrator privileges.
+     *
+     * @param userId the unique identifier of the user to promote
+     * @throws AuthException if the user is not found, or is already configured as an administrator
+     */
     @Transactional
     public void promoteToAdmin(Long userId) {
         User user = userRepo.findById(userId)
@@ -106,6 +162,12 @@ public class AdminService {
         userRepo.save(user);
     }
 
+    /**
+     * Computes high-level data aggregation and user acquisition metrics across the portal.
+     * Calculates user registrations recorded since the beginning of the current calendar day.
+     *
+     * @return a {@link SiteStatsDto} containing absolute system metrics
+     */
     public SiteStatsDto getSiteStats() {
         long totalUsers = userRepo.count();
         long totalQuizzes = quizRepo.count();
@@ -117,6 +179,12 @@ public class AdminService {
         return new SiteStatsDto(totalUsers, totalQuizzes, totalAttempts, newUsersToday);
     }
 
+    /**
+     * Maps an {@link Announcement} domain entity to its decoupled data transfer object.
+     *
+     * @param a the source announcement entity
+     * @return the transformed {@link AnnouncementDto} transfer record
+     */
     private AnnouncementDto toDto(Announcement a) {
         return new AnnouncementDto(
                 a.getId(),

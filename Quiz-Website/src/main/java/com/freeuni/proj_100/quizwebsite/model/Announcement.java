@@ -4,6 +4,13 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Database entity representing a platform announcement.
+ * <p>
+ * Maps to the {@code announcements} table and holds content created by administrators 
+ * to be broadcast globally across the application.
+ * </p>
+ */
 @Entity
 @Table(name="announcements")
 public class Announcement {

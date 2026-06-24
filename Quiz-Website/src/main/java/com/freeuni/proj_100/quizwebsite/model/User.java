@@ -82,6 +82,10 @@ public class User implements UserDetails {
         this.isAdmin = isAdmin;
     }
 
+    /**
+     *  Promotes the user to admin by setting property and
+     *  incrementing version number which invalidates the previous token
+     */
     public void promoteToAdmin() {
         this.isAdmin = true;
         this.tokenVersion++;
