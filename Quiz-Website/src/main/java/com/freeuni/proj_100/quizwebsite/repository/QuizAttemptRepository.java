@@ -18,13 +18,17 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     /**
      * Retrieves the history of non-practice quiz attempts for a specific user, ordered by most recent.
      */
-    @Query("SELECT a FROM QuizAttempt a WHERE a.user.id = :userId AND a.isPractice = false ORDER BY a.takenAt DESC")
-    List<QuizAttempt> getUserHistory(Long userId);
+    List<QuizAttempt> findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(Long userId);
 
     /**
      * Retrieves the leaderboard for a specific quiz based on score (descending) and time taken (ascending).
      * Now accepts a Pageable object to prevent memory overload.
      */
-    @Query("SELECT a FROM QuizAttempt a WHERE a.quizId = :quizId AND a.isPractice = false ORDER BY a.score DESC, a.timeTakenSec ASC")
-    List<QuizAttempt> getLeaderboard(Long quizId, Pageable pageable);
+    List<QuizAttempt> findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(Long quizId, Pageable pageable);
+
+
+    /**
+     * Deletes the quiz attempt by id
+     */
+    void deleteByQuizId(Long quizId);
 }

@@ -2,18 +2,20 @@ package com.freeuni.proj_100.quizwebsite.service;
 
 import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.dto.CreateAnnouncementRequest;
+import com.freeuni.proj_100.quizwebsite.dto.SiteStatsDto;
 import com.freeuni.proj_100.quizwebsite.exception.AuthException;
 import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Announcement;
-import com.freeuni.proj_100.quizwebsite.model.QuizAttemptRepository;
 import com.freeuni.proj_100.quizwebsite.model.User;
 import com.freeuni.proj_100.quizwebsite.repository.AnnouncementRepository;
+import com.freeuni.proj_100.quizwebsite.repository.QuizAttemptRepository;
 import com.freeuni.proj_100.quizwebsite.repository.QuizRepository;
 import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -102,6 +104,17 @@ public class AdminService {
 
         user.promoteToAdmin();
         userRepo.save(user);
+    }
+
+    public SiteStatsDto getSiteStats() {
+        long totalUsers = userRepo.count();
+        long totalQuizzes = quizRepo.count();
+        long totalAttempts = quizAttemptRepo.count();
+        long newUsersToday = userRepo.countByCreatedAtAfter(
+                LocalDateTime.now().toLocalDate().atStartOfDay()
+        );
+
+        return new SiteStatsDto(totalUsers, totalQuizzes, totalAttempts, newUsersToday);
     }
 
     private AnnouncementDto toDto(Announcement a) {
