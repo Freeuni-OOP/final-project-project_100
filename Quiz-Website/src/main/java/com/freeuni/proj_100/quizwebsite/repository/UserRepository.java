@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.tokenVersion FROM User u WHERE u.username = :username")
     Optional<Integer> findTokenVersionByUsername(@Param("username") String username);
+
+    long countByCreatedAtAfter(LocalDateTime dateTime);
 }
