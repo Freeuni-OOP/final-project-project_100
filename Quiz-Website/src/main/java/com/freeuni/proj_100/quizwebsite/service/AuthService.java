@@ -59,7 +59,10 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(req.password()));
 
         User savedUser = userRepo.save(user);
-        String token = jwtUtil.generateToken(savedUser.getUsername(), savedUser.getAuthorities());
+        String token = jwtUtil.generateToken(
+                savedUser.getUsername(),
+                savedUser.getAuthorities(),
+                savedUser.getTokenVersion());
 
         return new AuthResponse(savedUser.getId(), savedUser.getUsername(), token, savedUser.isAdmin());
     }
@@ -80,7 +83,10 @@ public class AuthService {
             throw new AuthException("Invalid username or password");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getAuthorities());
+        String token = jwtUtil.generateToken(
+                user.getUsername(),
+                user.getAuthorities(),
+                user.getTokenVersion());
 
         return new AuthResponse(user.getId(), user.getUsername(), token, user.isAdmin());
     }

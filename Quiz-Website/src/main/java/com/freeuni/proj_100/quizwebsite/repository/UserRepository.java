@@ -2,6 +2,8 @@ package com.freeuni.proj_100.quizwebsite.repository;
 
 import com.freeuni.proj_100.quizwebsite.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -36,4 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return {@code true} if a user with the email exists, {@code false} otherwise
      */
     boolean existsByEmail(String email);
+
+    @Query("SELECT u.tokenVersion FROM User u WHERE u.username = :username")
+    Optional<Integer> findTokenVersionByUsername(@Param("username") String username);
 }

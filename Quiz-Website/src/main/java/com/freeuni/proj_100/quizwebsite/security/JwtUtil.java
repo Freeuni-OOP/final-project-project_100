@@ -54,8 +54,9 @@ public class JwtUtil {
      */
     public String generateToken(
             String username,
-            Collection<? extends GrantedAuthority> authorities) {
-
+            Collection<? extends GrantedAuthority> authorities,
+            int tokenVersion
+    ) {
         Date now = new Date();
         Date expDate = new Date(now.getTime() + expirationMs);
 
@@ -66,6 +67,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(username)
                 .claim("roles", roles)
+                .claim("version", tokenVersion)
                 .issuedAt(now)
                 .expiration(expDate)
                 .signWith(secretKey)
@@ -81,6 +83,10 @@ public class JwtUtil {
      */
     public String getUsername(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    public int getVersion(String token) {
+        return parseClaims(token).get("version", Integer.class);
     }
 
     /**
