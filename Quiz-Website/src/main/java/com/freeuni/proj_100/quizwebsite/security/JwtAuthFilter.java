@@ -1,5 +1,6 @@
 package com.freeuni.proj_100.quizwebsite.security;
 
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Security filter that intercepts incoming HTTP requests to validate JWT access tokens.
@@ -22,14 +24,16 @@ import java.util.List;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepo;
 
     /**
      * Constructs a new {@code JwtAuthFilter} with its required helper components.
      *
      * @param jwtUtil            the JWT utility instance injected by Spring
      */
-    public JwtAuthFilter(JwtUtil jwtUtil) {
+    public JwtAuthFilter(JwtUtil jwtUtil, UserRepository userRepo) {
         this.jwtUtil = jwtUtil;
+        this.userRepo = userRepo;
     }
 
     /**
@@ -62,14 +66,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String username = jwtUtil.getUsername(token);
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            String username = jwtUtil.getUsername(token);
+            int tokenVersion = jwtUtil.getVersion(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            Optional<Integer> currVersion = userRepo.findTokenVersionByUsername(username);
+            if (currVersion.isEmpty() || currVersion.get() != tokenVersion) {
+                filterChains.doFilter(req, resp);
+                return;
+            }
+
             List<GrantedAuthority> authorities = jwtUtil.getAuthorities(token);
-
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
-
             authToken.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(req)
             );

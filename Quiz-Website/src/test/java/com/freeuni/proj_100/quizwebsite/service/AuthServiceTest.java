@@ -48,7 +48,7 @@ public class AuthServiceTest {
         when(userRepo.existsByEmail("bobert@gmail.com")).thenReturn(false);
         when(passEncoder.encode("secret123")).thenReturn("hashed_password");
         when(userRepo.save(any(User.class))).thenReturn(user);
-        when(jwtUtil.generateToken(eq("bob"), any())).thenReturn("mock.jwt.token");
+        when(jwtUtil.generateToken(eq("bob"), any(), 0)).thenReturn("mock.jwt.token");
 
         RegisterRequest request = new RegisterRequest("bob", "bobert@gmail.com", "secret123");
         AuthResponse response = authService.register(request);
@@ -85,7 +85,7 @@ public class AuthServiceTest {
     void loginValidRequestTest() {
         when(userRepo.findByUsername("bob")).thenReturn(Optional.of(user));
         when(passEncoder.matches("secret123", "hashed_password")).thenReturn(true);
-        when(jwtUtil.generateToken(eq("bob"), any())).thenReturn("mock.jwt.token");
+        when(jwtUtil.generateToken(eq("bob"), any(), 0)).thenReturn("mock.jwt.token");
 
         LoginRequest request = new LoginRequest("bob", "secret123");
         AuthResponse response = authService.login(request);

@@ -24,7 +24,8 @@ public class JwtUtilTest {
     void generateTokenShouldReturnNonNull() {
         String token = jwtUtil.generateToken(
                 "bob",
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                List.of(new SimpleGrantedAuthority("ROLE_USER")),
+                0
         );
 
         assertNotNull(token);
@@ -35,7 +36,8 @@ public class JwtUtilTest {
     void getUsernameReturnsCorrectUsername() {
         String token = jwtUtil.generateToken(
                 "bob",
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                List.of(new SimpleGrantedAuthority("ROLE_USER")),
+                0
         );
 
         assertEquals("bob", jwtUtil.getUsername(token));
@@ -45,7 +47,8 @@ public class JwtUtilTest {
     void getAuthoritiesReturnsCorrectRole() {
         String token = jwtUtil.generateToken(
                 "bob",
-                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                List.of(new SimpleGrantedAuthority("ROLE_ADMIN")),
+                0
         );
 
         var authorities = jwtUtil.getAuthorities(token);
@@ -57,7 +60,8 @@ public class JwtUtilTest {
     void isTokenValidReturnsCorrectly() {
         String token = jwtUtil.generateToken(
                 "alice",
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                List.of(new SimpleGrantedAuthority("ROLE_USER")),
+                0
         );
 
         assertTrue(jwtUtil.isTokenValid(token));
