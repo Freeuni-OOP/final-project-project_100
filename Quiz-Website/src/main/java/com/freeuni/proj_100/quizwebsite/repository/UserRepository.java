@@ -40,8 +40,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     boolean existsByEmail(String email);
 
+    /**
+     * Retrieves the security token version associated with a specific username.
+     *
+     * @param username the username of the user whose token version is being verified
+     * @return an {@link Optional} containing the user's current token version if found; 
+     * otherwise an empty {@link Optional}
+     */
     @Query("SELECT u.tokenVersion FROM User u WHERE u.username = :username")
     Optional<Integer> findTokenVersionByUsername(@Param("username") String username);
 
+    /**
+     * Counts the total number of user accounts registered after a specified date and time.
+     *
+     * @param dateTime the cutoff threshold timestamp to evaluate registrations against
+     * @return the absolute count of user accounts created after the provided timestamp
+     */
     long countByCreatedAtAfter(LocalDateTime dateTime);
 }
