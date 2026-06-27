@@ -3,6 +3,7 @@ package com.freeuni.proj_100.quizwebsite.service;
 import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.dto.CreateAnnouncementRequest;
 import com.freeuni.proj_100.quizwebsite.dto.SiteStatsDto;
+import com.freeuni.proj_100.quizwebsite.dto.UserSummaryDto;
 import com.freeuni.proj_100.quizwebsite.exception.AuthException;
 import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Announcement;
@@ -80,6 +81,22 @@ public class AdminService {
         Announcement saved = announcementRepo.save(announcement);
         
         return announcementService.toDto(saved);
+    }
+
+    /**
+     *  Retrieves all user summaries
+     * @return
+     */
+    public List<UserSummaryDto> getAllUsers() {
+        return userRepo.findAll().stream()
+                .map(u -> new UserSummaryDto(
+                        u.getId(),
+                        u.getUsername(),
+                        u.getEmail(),
+                        u.isAdmin(),
+                        u.getCreatedAt()
+                ))
+                .toList();
     }
 
     /**
