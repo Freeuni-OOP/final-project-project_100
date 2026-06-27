@@ -18,7 +18,7 @@ public class LeaderboardService {
     }
 
     public List<QuizAttemptDTO> getTopLeaderboard(Long quizId, int limit) {
-        return attemptRepository.getLeaderboard(quizId, PageRequest.of(0, limit))
+        return attemptRepository.findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(quizId, PageRequest.of(0, limit))
                 .stream()
                 .map(this::toDTO) // Points to the helper method below
                 .toList();
