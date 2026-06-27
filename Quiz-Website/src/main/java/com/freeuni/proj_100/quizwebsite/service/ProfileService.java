@@ -52,7 +52,7 @@ public class ProfileService {
     }
 
     private List<QuizAttemptDTO> fetchRecentAttempts(Long userId) {
-        return attemptRepository.getUserHistory(userId).stream()
+        return attemptRepository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(userId).stream()
                 .map(a -> new QuizAttemptDTO(a.getId(), a.getUser().getUsername(), a.getQuizId(), a.getScore(), a.getTimeTakenSec(), a.getTakenAt()))
                 .toList();
     }
