@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
+import AdminRoute from './components/AdminRoute.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import AdminPage from './pages/AdminPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 
 import { useAuth } from './context/AuthContext.jsx'
 
-// placeholder till we develop layout
 function HomePage() {
     const { user, logout } = useAuth();
     return (
@@ -27,6 +28,10 @@ function App() {
 
                 <Route element={<PrivateRoute />}>
                     <Route path="/home" element={<HomePage />} />
+
+                    <Route element={<AdminRoute />}>
+                        <Route path="/admin" element={<AdminPage />} />
+                    </Route>
                 </Route>
 
                 <Route path="*" element={<Navigate to="/login" replace />} />
