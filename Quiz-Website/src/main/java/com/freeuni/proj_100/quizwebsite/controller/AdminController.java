@@ -3,6 +3,7 @@ package com.freeuni.proj_100.quizwebsite.controller;
 import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.dto.CreateAnnouncementRequest;
 import com.freeuni.proj_100.quizwebsite.dto.SiteStatsDto;
+import com.freeuni.proj_100.quizwebsite.dto.UserSummaryDto;
 import com.freeuni.proj_100.quizwebsite.service.AdminService;
 import com.freeuni.proj_100.quizwebsite.service.AnnouncementService;
 import jakarta.validation.Valid;
@@ -137,5 +138,10 @@ public class AdminController {
     @GetMapping("/announcements")
     public ResponseEntity<List<AnnouncementDto>> getAllAnnouncements() {
         return ResponseEntity.ok(announcementService.getAllAnnouncements());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserSummaryDto>> getAllUsers() {
+        return ResponseEntity.ok(adminService.getAllUsers());
     }
 }
