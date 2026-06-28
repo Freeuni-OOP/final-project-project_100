@@ -1,58 +1,14 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
-import styles from '../styles/navbar.module.css';
+import { Outlet } from 'react-router-dom';
+import Navbar from './Navbar.jsx';
+import styles from '../styles/layout.module.css';
 
-const NAV_LINKS = [
-    { to: '/home',   label: 'Home' },
-    { to: '/quizzes', label: 'Quizzes' },
-]
-
-export default function Navbar() {
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    function handleLogout() {
-        logout();
-        navigate('/login');
-    }
-
-    return (
-        <nav className={styles.nav}>
-            <div className={styles.inner}>
-
-                <Link to="/home" className={styles.logo}>
-                    QuizSite
-                </Link>
-
-                <div className={styles.links}>
-                    {NAV_LINKS.map(({ to, label }) => (
-                        <Link
-                            key={to}
-                            to={to}
-                            className={`${styles.link} ${location.pathname === to ? styles.linkActive : ''}`}
-                        >
-                            {label}
-                        </Link>
-                    ))}
-                    {user?.isAdmin && (
-                        <Link
-                            to="/admin"
-                            className={`${styles.link} ${location.pathname === '/admin' ? styles.linkActive : ''}`}
-                        >
-                            Admin
-                        </Link>
-                    )}
-                </div>
-
-                <div className={styles.right}>
-                    <span className={styles.username}>{user?.username}</span>
-                    <button className={styles.logoutBtn} onClick={handleLogout}>
-                        Log out
-                    </button>
-                </div>
-
-            </div>
-        </nav>
-    );
+export default function Layout() {
+  return (
+    <div className={styles.root}>
+      <Navbar />
+      <main className={styles.main}>
+        <Outlet />
+      </main>
+    </div>
+  );
 }

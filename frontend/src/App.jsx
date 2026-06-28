@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import HomePage from './pages/HomePage.jsx'
+import Layout from './components/Layout.jsx'
 
 function App() {
   return (
@@ -16,10 +17,12 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
 
                 <Route element={<PrivateRoute />}>
-                    <Route path="/home" element={<HomePage />} />
+                    <Route element={<Layout />}>
+                        <Route path="/home" element={<HomePage />} />
 
-                    <Route element={<AdminRoute />}>
-                        <Route path="/admin" element={<AdminPage />} />
+                        <Route element={<AdminRoute />}>
+                            <Route path="/admin" element={<AdminPage />} />
+                        </Route>
                     </Route>
                 </Route>
 
