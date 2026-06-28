@@ -5,18 +5,7 @@ import AdminRoute from './components/AdminRoute.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
-
-import { useAuth } from './context/AuthContext.jsx'
-
-function HomePage() {
-    const { user, logout } = useAuth();
-    return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Welcome, {user?.username}</h1>
-            <button onClick={logout}>Log out</button>
-        </div>
-    );
-}
+import HomePage from './pages/HomePage.jsx'
 
 function App() {
   return (
