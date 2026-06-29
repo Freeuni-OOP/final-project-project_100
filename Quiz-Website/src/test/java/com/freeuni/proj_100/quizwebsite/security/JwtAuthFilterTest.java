@@ -1,5 +1,6 @@
 package com.freeuni.proj_100.quizwebsite.security;
 
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -24,6 +26,7 @@ class JwtAuthFilterTest {
     @Mock
     private JwtUtil jwtUtil;
 
+    @Mock private UserRepository userRepo;
     @Mock private HttpServletRequest request;
     @Mock private HttpServletResponse response;
     @Mock private FilterChain filterChain;
@@ -74,6 +77,7 @@ class JwtAuthFilterTest {
         when(jwtUtil.getUsername("valid.token")).thenReturn("alice");
         when(jwtUtil.getAuthorities("valid.token"))
                 .thenReturn(List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        when(userRepo.findTokenVersionByUsername("alice")).thenReturn(Optional.of(0));
 
         jwtAuthFilter.doFilterInternal(request, response, filterChain);
 
