@@ -45,7 +45,7 @@ class QuizAttemptRepositoryTest {
         repository.save(practice);
         repository.save(otherUserAttempt);
 
-        List<QuizAttempt> history = repository.getUserHistory(1L);
+        List<QuizAttempt> history = repository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(1L);
 
         assertEquals(1, history.size());
         assertFalse(history.get(0).isPractice());
@@ -54,7 +54,7 @@ class QuizAttemptRepositoryTest {
 
     @Test
     void testReturnsEmptyListIfNoAttempts() {
-        List<QuizAttempt> history = repository.getUserHistory(999L);
+        List<QuizAttempt> history = repository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(999L);
         assertEquals(0, history.size());
     }
 
@@ -73,7 +73,7 @@ class QuizAttemptRepositoryTest {
         repository.save(oldAttempt);
         repository.save(newAttempt);
 
-        List<QuizAttempt> history = repository.getUserHistory(1L);
+        List<QuizAttempt> history = repository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(1L);
 
         assertEquals(2, history.size());
         // The newest one should be first in the list
@@ -85,15 +85,22 @@ class QuizAttemptRepositoryTest {
         User player = new User(); player.setId(1L);
 
         QuizAttempt highscore = new QuizAttempt();
-        highscore.setUser(player); highscore.setQuizId(5L); highscore.setScore(100); highscore.setPractice(false);
+        highscore.setUser(player);
+        highscore.setQuizId(5L);
+        highscore.setScore(100);
+        highscore.setPractice(false);
 
         QuizAttempt practiceScore = new QuizAttempt();
-        practiceScore.setUser(player); practiceScore.setQuizId(5L); practiceScore.setScore(200); practiceScore.setPractice(true);
+        practiceScore.setUser(player);
+        practiceScore.setQuizId(5L);
+        practiceScore.setScore(200);
+        practiceScore.setPractice(true);
 
         repository.save(highscore);
         repository.save(practiceScore);
 
-        List<QuizAttempt> leaderboard = repository.getLeaderboard(5L, PageRequest.of(0, 10));
+        List<QuizAttempt> leaderboard =
+                repository.findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(5L, PageRequest.of(0, 10));
 
         assertEquals(1, leaderboard.size());
         assertEquals(100, leaderboard.get(0).getScore());

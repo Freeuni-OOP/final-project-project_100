@@ -48,7 +48,7 @@ public class AuthControllerTest {
     @Test
     void registerShouldReturn201WhenValid() {
         RegisterRequest req = new RegisterRequest("alice", "alice@example.com", "secret123");
-        AuthResponse mockResp = new AuthResponse(1L, "alice", "mock.token");
+        AuthResponse mockResp = new AuthResponse(1L, "alice", "mock.token", false);
         when(authService.register(any(RegisterRequest.class))).thenReturn(mockResp);
 
         ResponseEntity<AuthResponse> response = authController.register(req);
@@ -84,7 +84,7 @@ public class AuthControllerTest {
     @Test
     void loginShouldReturn200WhenValid() {
         LoginRequest req = new LoginRequest("alice", "secret123");
-        AuthResponse mockResponse = new AuthResponse(1L, "alice", "mock.token");
+        AuthResponse mockResponse = new AuthResponse(1L, "alice", "mock.token", false);
         when(authService.login(any(LoginRequest.class))).thenReturn(mockResponse);
 
         ResponseEntity<AuthResponse> response = authController.login(req);
