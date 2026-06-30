@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import styles from '../styles/quizCreate.module.css';
-import axiosInstance from '../api/axios';
 import { useNavigate } from 'react-router-dom';
-
 
 const STEPS = {
     0: 'Basic Info & Options',
