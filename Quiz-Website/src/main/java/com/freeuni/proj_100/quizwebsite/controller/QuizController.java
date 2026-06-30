@@ -5,12 +5,14 @@ import com.freeuni.proj_100.quizwebsite.service.QuizService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Optional;
 
 /**
  * Controller for quiz-taking related HTTP requests.
- * Handles routing and passes data to Thymeleaf templates.
  */
 @Controller
 @RequestMapping("/quiz")
@@ -69,5 +71,20 @@ public class QuizController {
         model.addAttribute("quiz", quiz.get());
         model.addAttribute("answers", answers);
         return "quiz/results";
+    }
+    @PostMapping("/api/quizzes")
+    public ResponseEntity<String> createQuiz(@RequestBody QuizCreationDTO quizCreationDTO) {
+        // Basic validation check matching requirements
+        if (quizCreationDTO.getTitle() == null || quizCreationDTO.getTitle().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Quiz title cannot be blank.");
+        }
+
+        // Printing statements so incoming frontend payloads can immediately be seen in console, Will remove later
+        System.out.println("Received Quiz Creation Payload: " + quizCreationDTO.getTitle());
+        System.out.println("Number of questions submitted: " + quizCreationDTO.getQuestions().size());
+
+        // TODO: QuizService logic will be called here once Temo integrates database entities
+
+        return ResponseEntity.ok("Quiz base draft received successfully");
     }
 }
