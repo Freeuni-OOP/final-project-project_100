@@ -3,7 +3,7 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
-
+import QuizCreatePage from './pages/QuizCreatePage.jsx'
 import { useAuth } from './context/AuthContext.jsx'
 
 // placeholder till we develop layout
@@ -30,6 +30,14 @@ function App() {
                 </Route>
 
                 <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route
+                    path="/quiz-create"
+                    element={
+                        <PrivateRoute>
+                            <QuizCreatePage />
+                        </PrivateRoute>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     </AuthProvider>
