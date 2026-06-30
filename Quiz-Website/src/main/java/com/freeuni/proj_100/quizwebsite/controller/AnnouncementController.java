@@ -2,6 +2,7 @@ package com.freeuni.proj_100.quizwebsite.controller;
 
 import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.service.AdminService;
+import com.freeuni.proj_100.quizwebsite.service.AnnouncementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +21,19 @@ import java.util.List;
 @RequestMapping("/api/announcements")
 public class AnnouncementController {
     private final AdminService adminService;
+    private final AnnouncementService announcementService;
 
     /**
      * Constructs a new {@code AnnouncementController} with the required dependency.
      *
      * @param adminService the service handling administration logic and announcements
      */
-    public AnnouncementController(AdminService adminService) {
+    public AnnouncementController(
+            AdminService adminService,
+            AnnouncementService announcementService
+    ) {
         this.adminService = adminService;
+        this.announcementService = announcementService;
     }
 
     /**
@@ -38,7 +44,7 @@ public class AnnouncementController {
      */
     @GetMapping
     public ResponseEntity<List<AnnouncementDto>> getAnnouncements() {
-        return ResponseEntity.ok(adminService.getAllAnnouncements());
+        return ResponseEntity.ok(announcementService.getAllAnnouncements());
     }
 
 }
