@@ -33,6 +33,7 @@ public class AdminService {
     private final QuizRepository quizRepo;
     private final QuizAttemptRepository quizAttemptRepo;
     private final AnnouncementRepository announcementRepo;
+    private final AnnouncementService announcementService;
 
     /**
      * Constructs an {@code AdminService} with all required data repositories.
@@ -46,12 +47,14 @@ public class AdminService {
             UserRepository userRepo,
             QuizRepository quizRepo,
             QuizAttemptRepository quizAttemptRepo,
-            AnnouncementRepository announcementRepo
+            AnnouncementRepository announcementRepo,
+            AnnouncementService announcementService
     ) {
         this.userRepo = userRepo;
         this.quizRepo = quizRepo;
         this.announcementRepo = announcementRepo;
         this.quizAttemptRepo = quizAttemptRepo;
+        this.announcementService = announcementService;
     }
 
     /**
@@ -76,19 +79,7 @@ public class AdminService {
 
         Announcement saved = announcementRepo.save(announcement);
         
-        return toDto(saved);
-    }
-
-    /**
-     * Retrieves all platform announcements sorted chronologically by creation timestamp in descending order.
-     *
-     * @return a {@link List} of {@link AnnouncementDto} records
-     */
-    public List<AnnouncementDto> getAllAnnouncements() {
-        return announcementRepo.findAllByOrderByCreatedAtDesc()
-                .stream()
-                .map(this::toDto)
-                .toList();
+        return announcementService.toDto(saved);
     }
 
     /**
@@ -177,21 +168,5 @@ public class AdminService {
         );
 
         return new SiteStatsDto(totalUsers, totalQuizzes, totalAttempts, newUsersToday);
-    }
-
-    /**
-     * Maps an {@link Announcement} domain entity to its decoupled data transfer object.
-     *
-     * @param a the source announcement entity
-     * @return the transformed {@link AnnouncementDto} transfer record
-     */
-    private AnnouncementDto toDto(Announcement a) {
-        return new AnnouncementDto(
-                a.getId(),
-                a.getTitle(),
-                a.getContent(),
-                a.getCreator().getUsername(),
-                a.getCreatedAt()
-        );
     }
 }

@@ -4,6 +4,7 @@ import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.dto.CreateAnnouncementRequest;
 import com.freeuni.proj_100.quizwebsite.dto.SiteStatsDto;
 import com.freeuni.proj_100.quizwebsite.service.AdminService;
+import com.freeuni.proj_100.quizwebsite.service.AnnouncementService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,9 +23,14 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
     private final AdminService adminService;
+    private final AnnouncementService announcementService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(
+            AdminService adminService,
+            AnnouncementService announcementService
+    ) {
         this.adminService = adminService;
+        this.announcementService = announcementService;
     }
 
     /**
@@ -130,6 +136,6 @@ public class AdminController {
      */
     @GetMapping("/announcements")
     public ResponseEntity<List<AnnouncementDto>> getAllAnnouncements() {
-        return ResponseEntity.ok(adminService.getAllAnnouncements());
+        return ResponseEntity.ok(announcementService.getAllAnnouncements());
     }
 }
