@@ -145,9 +145,4 @@ public class AdminController {
     public ResponseEntity<List<UserSummaryDto>> getAllUsers() {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<UserSummaryDto>> getAllUsers() {
-        return ResponseEntity.ok(adminService.getAllUsers());
-    }
 }
