@@ -174,7 +174,7 @@ function QuizzesTab() {
   const [loading, setLoading] = useState(true)
 
   const fetchQuizzes = useCallback(async () => {
-    const res = await api.get('/api/quizzes')
+    const res = await api.get('/quizzes')
     setQuizzes(res.data)
     setLoading(false)
   }, [])
@@ -184,7 +184,7 @@ function QuizzesTab() {
   async function handleDelete(id, title) {
     if (!window.confirm(`Delete quiz "${title}"? This cannot be undone.`)) return
     try {
-      await api.delete(`/admin/quizzes/${id}`)
+      await api.delete(`/admin/quiz/${id}`)
       setQuizzes(prev => prev.filter(q => q.id !== id))
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to delete quiz')
@@ -194,7 +194,7 @@ function QuizzesTab() {
   async function handleClearHistory(id, title) {
     if (!window.confirm(`Clear all attempt history for "${title}"?`)) return
     try {
-      await api.delete(`/admin/quizzes/${id}/history`)
+      await api.delete(`/admin/quiz/${id}/history`)
       alert('History cleared')
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to clear history')
