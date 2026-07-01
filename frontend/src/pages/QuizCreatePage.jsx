@@ -254,7 +254,6 @@ export default function QuizCreatePage() {
                     </div>
                 )}
 
-                {/*Question builder that has all 4 required types */}
                 {currentStep === 1 && (
                     <div className={styles.stepForm}>
                         <h3>Build Your Questions</h3>
