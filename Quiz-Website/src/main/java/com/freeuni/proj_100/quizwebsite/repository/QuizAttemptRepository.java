@@ -9,10 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Repository interface for QuizAttempt entity.
- * Provides operations to query user histories and paginated quiz leaderboards.
- */
 @Repository
 public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> {
 
@@ -25,15 +21,6 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
      * Highest performers of all time.
      * This serves as the primary leaderboard query.
      */
-<<<<<<< Updated upstream
-    List<QuizAttempt> findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(Long quizId, Pageable pageable);
-
-
-    /**
-     * Deletes the quiz attempt by id
-     */
-    void deleteByQuizId(Long quizId);
-=======
     @Query("SELECT a FROM QuizAttempt a WHERE a.quizId = :quizId AND a.isPractice = false ORDER BY a.score DESC, a.timeTakenSec ASC")
     List<QuizAttempt> getTopPerformersAllTime(Long quizId, Pageable pageable);
 
@@ -54,5 +41,9 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
      */
     @Query("SELECT a FROM QuizAttempt a WHERE a.quizId = :quizId AND a.user.username = :username AND a.isPractice = false ORDER BY a.takenAt DESC")
     List<QuizAttempt> getUserPastPerformance(Long quizId, String username);
->>>>>>> Stashed changes
+
+    /**
+     * Deletes the quiz attempt by id
+     */
+    void deleteByQuizId(Long quizId);
 }

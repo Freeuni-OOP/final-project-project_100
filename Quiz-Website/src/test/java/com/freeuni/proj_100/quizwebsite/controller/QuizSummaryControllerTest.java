@@ -29,7 +29,7 @@ class QuizSummaryControllerTest {
     @Test
     @WithMockUser(username = "tazo")
     void testReturnsQuizSummarySuccessfully() throws Exception {
-        // Using the empty constructor as defined in your DTO class
+        // Using the empty constructor as defined in DTO class
         QuizSummaryDTO mockSummary = new QuizSummaryDTO();
 
         when(quizSummaryService.getQuizSummary(1L, "tazo")).thenReturn(mockSummary);

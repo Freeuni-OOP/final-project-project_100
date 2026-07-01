@@ -76,24 +76,6 @@ class QuizAttemptRepositoryTest {
 
         List<QuizAttempt> top = repository.getTopPerformersAllTime(5L, PageRequest.of(0, 10));
 
-<<<<<<< Updated upstream
-        List<QuizAttempt> history = repository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(1L);
-
-        assertEquals(1, history.size());
-        assertFalse(history.get(0).isPractice());
-        assertEquals(1L, history.get(0).getUser().getId());
-    }
-
-    @Test
-    void testReturnsEmptyListIfNoAttempts() {
-        List<QuizAttempt> history = repository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(999L);
-        assertEquals(0, history.size());
-    }
-
-    @Test
-    void testOrdersHistoryByMostRecent() {
-        User player = new User(); player.setId(1L);
-=======
         assertEquals(2, top.size());
         assertEquals(45, top.get(0).getTimeTakenSec()); // Verifies tiebreaker sort logic (timeTakenSec ASC)
     }
@@ -103,7 +85,6 @@ class QuizAttemptRepositoryTest {
         User player = createAndSaveTestUser("player2");
         // Frozen base reference point to avoid clock drift issues completely
         LocalDateTime frozenNow = LocalDateTime.of(2026, 7, 1, 12, 0);
->>>>>>> Stashed changes
 
         QuizAttempt oldAttempt = new QuizAttempt();
         oldAttempt.setUser(player); oldAttempt.setQuizId(5L); oldAttempt.setPractice(false);
@@ -117,11 +98,7 @@ class QuizAttemptRepositoryTest {
 
         repository.saveAll(List.of(oldAttempt, newAttempt));
 
-<<<<<<< Updated upstream
-        List<QuizAttempt> history = repository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(1L);
-=======
         List<QuizAttempt> recentTop = repository.getTopPerformersLastDay(5L, frozenNow.minusDays(1), PageRequest.of(0, 10));
->>>>>>> Stashed changes
 
         assertEquals(1, recentTop.size());
         assertEquals(newAttempt.getTakenAt(), recentTop.get(0).getTakenAt());
@@ -132,19 +109,6 @@ class QuizAttemptRepositoryTest {
         User player = createAndSaveTestUser("player3");
         LocalDateTime baseTime = LocalDateTime.of(2026, 7, 1, 12, 0);
 
-<<<<<<< Updated upstream
-        QuizAttempt highscore = new QuizAttempt();
-        highscore.setUser(player);
-        highscore.setQuizId(5L);
-        highscore.setScore(100);
-        highscore.setPractice(false);
-
-        QuizAttempt practiceScore = new QuizAttempt();
-        practiceScore.setUser(player);
-        practiceScore.setQuizId(5L);
-        practiceScore.setScore(200);
-        practiceScore.setPractice(true);
-=======
         QuizAttempt older = new QuizAttempt();
         older.setUser(player); older.setQuizId(5L); older.setPractice(false);
         older.setTakenAt(baseTime.minusHours(5));
@@ -154,16 +118,10 @@ class QuizAttemptRepositoryTest {
         newer.setUser(player); newer.setQuizId(5L); newer.setPractice(false);
         newer.setTakenAt(baseTime); // Hardcoded sequential order safely avoids millisecond dropping drops
         newer.setScore(85); newer.setTimeTakenSec(25);
->>>>>>> Stashed changes
 
         repository.saveAll(List.of(older, newer));
 
-<<<<<<< Updated upstream
-        List<QuizAttempt> leaderboard =
-                repository.findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(5L, PageRequest.of(0, 10));
-=======
         List<QuizAttempt> recent = repository.getRecentTestTakers(5L, PageRequest.of(0, 10));
->>>>>>> Stashed changes
 
         assertEquals(2, recent.size());
         assertTrue(recent.get(0).getTakenAt().isAfter(recent.get(1).getTakenAt()));

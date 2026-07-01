@@ -22,7 +22,7 @@ public class QuizSummaryService {
         var limitTen = PageRequest.of(0, 10);
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
 
-        // Assumes your QuizAttemptDTO has a constructor that takes a QuizAttempt entity:
+        // Assumes QuizAttemptDTO has a constructor that takes a QuizAttempt entity:
         // public QuizAttemptDTO(QuizAttempt attempt) { ... }
         summary.setTopAllTime(attemptRepository.getTopPerformersAllTime(quizId, limitTen)
                 .stream().map(QuizAttemptDTO::new).toList());
