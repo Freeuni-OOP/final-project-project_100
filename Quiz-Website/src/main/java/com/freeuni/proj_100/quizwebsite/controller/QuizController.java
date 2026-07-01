@@ -13,7 +13,7 @@ import java.util.Optional;
  * Handles routing and passes data to Thymeleaf templates.
  */
 @Controller
-@RequestMapping("/quiz")
+@RequestMapping("/api/quiz")
 public class QuizController {
 
     private final QuizService quizService;
