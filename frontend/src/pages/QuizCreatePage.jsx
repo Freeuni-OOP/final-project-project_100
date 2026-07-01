@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from '../styles/quizCreate.module.css';
+import axiosInstance from '../api/axios';
 
 const STEPS = {
     0: 'Basic Info & Options',
@@ -39,6 +40,15 @@ export default function QuizCreatePage() {
     const handleBack = () => {
         setCurrentStep(prev => prev - 1);
     };
+    const handleSubmit = async () => {
+        try {
+            await axiosInstance.post('/quiz/create', quizData);
+            alert('Quiz created successfully!');
+        } catch (error) {
+            console.error('Error saving quiz:', error);
+            alert('Failed to save quiz.');
+        }
+    };
 
     return (
         <div className={styles.container}>
@@ -55,7 +65,7 @@ export default function QuizCreatePage() {
             </div>
 
             <div className={styles.formWindow}>
-                {/* Step 1: Base Configurations */}
+                {/* Base Configurations */}
                 {currentStep === 0 && (
                     <div className={styles.stepForm}>
                         <div className={styles.fieldGroup}>
@@ -153,7 +163,7 @@ export default function QuizCreatePage() {
                         Next
                     </button>
                 ) : (
-                    <button className={styles.submitBtn}>
+                    <button onClick={handleSubmit} className={styles.submitBtn}>
                         Publish Quiz
                     </button>
                 )}

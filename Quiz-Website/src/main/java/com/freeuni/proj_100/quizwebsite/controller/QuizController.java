@@ -15,7 +15,7 @@ import java.util.Optional;
  * Controller for quiz-taking related HTTP requests.
  */
 @Controller
-@RequestMapping("/quiz")
+@RequestMapping("/api/quiz")
 public class QuizController {
 
     private final QuizService quizService;
@@ -72,7 +72,7 @@ public class QuizController {
         model.addAttribute("answers", answers);
         return "quiz/results";
     }
-    @PostMapping("/api/quizzes")
+    @PostMapping("/create")
     public ResponseEntity<String> createQuiz(@RequestBody QuizCreationDTO quizCreationDTO) {
         // Basic validation check matching requirements
         if (quizCreationDTO.getTitle() == null || quizCreationDTO.getTitle().trim().isEmpty()) {
