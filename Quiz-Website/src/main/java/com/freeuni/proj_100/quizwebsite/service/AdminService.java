@@ -100,22 +100,6 @@ public class AdminService {
     }
 
     /**
-     *  Retrieves all user summaries
-     * @return
-     */
-    public List<UserSummaryDto> getAllUsers() {
-        return userRepo.findAll().stream()
-                .map(u -> new UserSummaryDto(
-                        u.getId(),
-                        u.getUsername(),
-                        u.getEmail(),
-                        u.isAdmin(),
-                        u.getCreatedAt()
-                ))
-                .toList();
-    }
-
-    /**
      * Deletes a user from the platform database by their unique ID.
      * <p>
      * Guarded by a transaction. This action will fail intentionally if the target user 
