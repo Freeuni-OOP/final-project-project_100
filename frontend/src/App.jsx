@@ -5,9 +5,13 @@ import AdminRoute from './components/AdminRoute.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
+import HomePage from './pages/HomePage.jsx'
 import Layout from './components/Layout.jsx'
 import QuizCreatePage from "./pages/QuizCreatePage.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import QuizTakePage from './pages/QuizTakePage.jsx'
+import QuizResultPage from './pages/QuizResultPage.jsx'
+
 
 // --- Your New Social & Summary Pages ---
 import ProfilePage from "./pages/ProfilePage.jsx";
@@ -38,6 +42,9 @@ function App() {
                                 <Route path="/admin" element={<AdminPage />} />
                             </Route>
                         </Route>
+
+                        <Route path="/quizzes/:quizId" element={<QuizTakePage />} />
+                        <Route path="/quizzes/:quizId/results" element={<QuizResultPage />} />
                     </Route>
 
                     <Route path="*" element={<Navigate to="/login" replace />} />
