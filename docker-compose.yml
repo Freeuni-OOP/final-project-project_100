@@ -1,0 +1,49 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: quizsite-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: quiz_app_dev
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./Quiz-Website
+    container_name: quizsite-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: quiz_app_dev
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: http://localhost
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/quiz_app_dev?createDatabaseIfNotExist=true&serverTimezone=UTC
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    container_name: quizsite-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  mysql_data:
