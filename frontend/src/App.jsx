@@ -5,8 +5,8 @@ import AdminRoute from './components/AdminRoute.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
-import HomePage from './pages/HomePage.jsx'
 import Layout from './components/Layout.jsx'
+import QuizCreatePage from "./pages/QuizCreatePage.jsx";
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
 
                 <Route element={<PrivateRoute />}>
                     <Route element={<Layout />}>
-                        <Route path="/home" element={<HomePage />} />
+                        <Route path="/quiz-create" element={<QuizCreatePage />} />
 
                         <Route element={<AdminRoute />}>
                             <Route path="/admin" element={<AdminPage />} />
