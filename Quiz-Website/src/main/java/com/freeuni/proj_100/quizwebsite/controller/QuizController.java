@@ -5,6 +5,9 @@ import com.freeuni.proj_100.quizwebsite.service.QuizService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
 
 import java.util.Optional;
 
@@ -69,5 +72,22 @@ public class QuizController {
         model.addAttribute("quiz", quiz.get());
         model.addAttribute("answers", answers);
         return "quiz/results";
+    }
+    /**
+     * Handles incoming React Axios requests to build and save a new quiz.
+     */
+    @PostMapping("/create")
+    @ResponseBody
+    public ResponseEntity<String> createQuiz(@RequestBody QuizCreationDTO quizCreationDTO) {
+        if (quizCreationDTO.getTitle() == null || quizCreationDTO.getTitle().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Quiz title cannot be blank.");
+        }
+
+        try {
+            quizService.saveQuizFromDTO(quizCreationDTO);
+            return ResponseEntity.ok("Quiz created successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error creating quiz: " + e.getMessage());
+        }
     }
 }
