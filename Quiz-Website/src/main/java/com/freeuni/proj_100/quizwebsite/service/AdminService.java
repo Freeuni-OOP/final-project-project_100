@@ -110,7 +110,7 @@ public class AdminService {
      * @throws AuthException if the target user is not found, or if they hold administrative rights
      */
     @Transactional
-    public void deleteUser(Long userId) {
+    public void deleteUser(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new AuthException("User not found"));
 
@@ -128,7 +128,7 @@ public class AdminService {
      * @throws ResourceNotFoundException if no quiz matches the provided identifier
      */
     @Transactional
-    public void deleteQuiz(Long quizId) {
+    public void deleteQuiz(Integer quizId) {
         if (!quizRepo.existsById(quizId)) {
             throw new ResourceNotFoundException("Quiz not found");
         }
@@ -143,7 +143,7 @@ public class AdminService {
      * @throws ResourceNotFoundException if the quiz record does not exist
      */
     @Transactional
-    public void clearQuizHistory(Long quizId) {
+    public void clearQuizHistory(Integer quizId) {
         if (!quizRepo.existsById(quizId)) {
             throw new ResourceNotFoundException("Quiz not found");
         }
@@ -158,7 +158,7 @@ public class AdminService {
      * @throws AuthException if the user is not found, or is already configured as an administrator
      */
     @Transactional
-    public void promoteToAdmin(Long userId) {
+    public void promoteToAdmin(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new AuthException("User not found"));
 

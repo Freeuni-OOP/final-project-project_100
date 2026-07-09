@@ -60,7 +60,7 @@ public class QuestionEntity {
      * Established as a Many-to-One relationship to support cascading persistence.
      */
     @ManyToOne
-    @JoinColumn(name = "quiz_id")
+    @JoinColumn(name = "quiz_id", insertable = false, updatable = false)
     private Quiz quiz;
 
     /**

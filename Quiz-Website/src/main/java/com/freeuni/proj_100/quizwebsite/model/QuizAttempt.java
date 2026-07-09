@@ -14,7 +14,7 @@ public class QuizAttempt {
     /** Auto-incremented primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     /** The user entity who took the quiz (Many-to-One relationship). */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,7 +23,7 @@ public class QuizAttempt {
 
     /** ID of the quiz that was taken. */
     @Column(name = "quiz_id", nullable = false)
-    private Long quizId;
+    private Integer quizId;
 
     /** The final score achieved on the attempt. */
     @Column(nullable = false)
@@ -43,14 +43,14 @@ public class QuizAttempt {
 
     public QuizAttempt() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 
-    public Long getQuizId() { return quizId; }
-    public void setQuizId(Long quizId) { this.quizId = quizId; }
+    public Integer getQuizId() { return quizId; }
+    public void setQuizId(Integer quizId) { this.quizId = quizId; }
 
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }

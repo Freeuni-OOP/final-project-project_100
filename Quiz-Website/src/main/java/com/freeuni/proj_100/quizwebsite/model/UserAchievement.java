@@ -14,7 +14,7 @@ public class UserAchievement {
     /** Auto-incremented primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     /** The user entity who earned the achievement (Many-to-One relationship). */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,8 +31,8 @@ public class UserAchievement {
 
     public UserAchievement() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }

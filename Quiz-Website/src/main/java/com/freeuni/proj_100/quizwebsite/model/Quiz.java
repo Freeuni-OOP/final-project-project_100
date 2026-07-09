@@ -16,11 +16,11 @@ public class Quiz {
     /** Auto-incremented primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     /** ID of the user who created this quiz. */
     @Column(name = "creator_id")
-    private Long creatorId;
+    private int creatorId;
 
     /** Title of the quiz. */
     @Column(nullable = false)
@@ -60,8 +60,8 @@ public class Quiz {
 
     public Quiz() {}
 
-    public Long getId() { return id; }
-    public Long getCreatorId() { return creatorId; }
+    public int getId() { return id; }
+    public int getCreatorId() { return creatorId; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public boolean isRandomized() { return isRandomized; }
@@ -71,8 +71,8 @@ public class Quiz {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public List<QuestionEntity> getQuestions() { return questions; }
 
-    public void setId(Long id) { this.id = id; }
-    public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
+    public void setId(int id) { this.id = id; }
+    public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
     public void setTitle(String title) { this.title = title; }
     public void setDescription(String description) { this.description = description; }
     public void setRandomized(boolean randomized) { isRandomized = randomized; }

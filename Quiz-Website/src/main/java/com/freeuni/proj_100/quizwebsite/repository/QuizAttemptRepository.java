@@ -13,22 +13,22 @@ import java.util.List;
  * Provides operations to query user histories and paginated quiz leaderboards.
  */
 @Repository
-public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> {
+public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Integer> {
 
     /**
      * Retrieves the history of non-practice quiz attempts for a specific user, ordered by most recent.
      */
-    List<QuizAttempt> findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(Long userId);
+    List<QuizAttempt> findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(Integer userId);
 
     /**
      * Retrieves the leaderboard for a specific quiz based on score (descending) and time taken (ascending).
      * Now accepts a Pageable object to prevent memory overload.
      */
-    List<QuizAttempt> findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(Long quizId, Pageable pageable);
+    List<QuizAttempt> findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(Integer quizId, Pageable pageable);
 
 
     /**
      * Deletes the quiz attempt by id
      */
-    void deleteByQuizId(Long quizId);
+    void deleteByQuizId(Integer quizId);
 }
