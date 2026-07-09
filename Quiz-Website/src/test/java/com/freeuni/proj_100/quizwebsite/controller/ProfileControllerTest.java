@@ -41,11 +41,12 @@ class ProfileControllerTest {
     @WithMockUser(username = "tazo")
     void testGetProfileSuccessfullyAndVerifiesPayload() throws Exception {
         ProfileResponseDTO mockProfile = new ProfileResponseDTO(
+                1L, // <-- Added the mock ID here to satisfy the new record structure
                 "tazo",
                 "tazo@example.com",
                 false,
                 LocalDateTime.now(),
-                "Beginner",
+                "SELF", // Updated to match our new relationship flags
                 List.of(),
                 List.of()
         );
@@ -55,9 +56,11 @@ class ProfileControllerTest {
         mockMvc.perform(get("/api/profiles/tazo"))
                 .andExpect(status().isOk())
                 // Verifying the JSON maps correctly to the frontend's expectations
+                .andExpect(jsonPath("$.userId").value(1L)) // Added check for the ID
                 .andExpect(jsonPath("$.username").value("tazo"))
                 .andExpect(jsonPath("$.email").value("tazo@example.com"))
-                .andExpect(jsonPath("$.isAdmin").value(false));
+                .andExpect(jsonPath("$.isAdmin").value(false))
+                .andExpect(jsonPath("$.relation").value("SELF"));
     }
 
     @Test
