@@ -27,16 +27,13 @@ function App() {
 
                     <Route element={<PrivateRoute />}>
                         <Route element={<Layout />}>
-                            {/* Teammate's Existing Routes */}
                             <Route path="/home" element={<HomePage />} />
                             <Route path="/quizzes/create" element={<QuizCreatePage />} />
 
-                            {/* Your New Social & Summary Routes */}
                             <Route path="/profile/:username" element={<ProfilePage />} />
                             <Route path="/friends" element={<FriendsPage />} />
                             <Route path="/quizzes/:quizId/summary" element={<QuizSummaryPage />} />
 
-                            {/* Teammate's Admin Routes */}
                             <Route element={<AdminRoute />}>
                                 <Route path="/admin" element={<AdminPage />} />
                             </Route>
