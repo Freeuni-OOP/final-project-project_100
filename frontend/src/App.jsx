@@ -8,7 +8,6 @@ import RegisterPage from './pages/RegisterPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import Layout from './components/Layout.jsx'
 import QuizCreatePage from "./pages/QuizCreatePage.jsx";
-import HomePage from "./pages/HomePage.jsx";
 import QuizTakePage from './pages/QuizTakePage.jsx'
 import QuizResultPage from './pages/QuizResultPage.jsx'
 
