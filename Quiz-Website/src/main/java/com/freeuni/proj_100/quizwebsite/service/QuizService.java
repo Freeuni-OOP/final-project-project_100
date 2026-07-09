@@ -65,6 +65,7 @@ public class QuizService {
      */
     @Transactional
     public void saveQuizFromDTO(QuizCreationDTO dto) {
+        //Create the Quiz entity
         Quiz quiz = new Quiz();
         quiz.setTitle(dto.getTitle());
         quiz.setDescription(dto.getDescription());
@@ -72,42 +73,42 @@ public class QuizService {
         quiz.setSinglePage(dto.isSinglePageLayout());
         quiz.setImmediateFeedback(dto.isImmediateFeedback());
         quiz.setCreatedAt(java.time.LocalDateTime.now());
-        Quiz savedQuiz = quizRepository.save(quiz);
 
         int sequence = 1;
         for (QuestionCreationDTO qDto : dto.getQuestions()) {
-            // 1. Always use QuestionEntity for database operations
+            //Create and configure Question
             QuestionEntity question = new QuestionEntity();
-
-            // 2. Set the data
-            question.setQuizId(savedQuiz.getId().intValue());
-            question.setQType(qDto.getType()); // This acts as your discriminator
+            question.setQuiz(quiz); // Set the parent relationship
+            question.setQType(qDto.getType());
             question.setPrompt(qDto.getQuestionText());
-            question.setImageUrl(qDto.getImageUrl()); // Will be null for non-picture questions
+            question.setImageUrl(qDto.getImageUrl());
             question.setSequenceNum(sequence++);
 
-            //Save the base entity first
-            QuestionEntity savedQuestion = questionRepository.save(question);
-
-            // Handle Answer Logic
+            // Configure Answers for this question
             if ("multiple-choice".equals(qDto.getType()) && qDto.getOptions() != null) {
                 for (int i = 0; i < qDto.getOptions().size(); i++) {
                     String optionText = qDto.getOptions().get(i);
                     AnswerEntity answer = new AnswerEntity();
-                    answer.setQuestion(savedQuestion);
+                    answer.setQuestion(question);
                     answer.setAnswerText(optionText);
                     answer.setSlotNum(i + 1);
                     answer.setCorrect(optionText.equals(qDto.getCorrectAnswer()));
-                    answerRepository.save(answer);
+                    question.getAnswers().add(answer); // Add to the list
                 }
             } else if (qDto.getCorrectAnswer() != null) {
                 AnswerEntity answer = new AnswerEntity();
-                answer.setQuestion(savedQuestion);
+                answer.setQuestion(question);
                 answer.setAnswerText(qDto.getCorrectAnswer());
                 answer.setSlotNum(1);
                 answer.setCorrect(true);
-                answerRepository.save(answer);
+                question.getAnswers().add(answer);
             }
+
+            //Add question to quiz (cascading handles the save)
+            quiz.getQuestions().add(question);
         }
+
+        //Single repository call replaces all loop-based saves
+        quizRepository.save(quiz);
     }
 }
