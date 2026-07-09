@@ -25,8 +25,8 @@ class UserAchievementRepositoryTest {
 
     @Test
     void testFindsAchievementsForSpecificUserOnly() {
-        User target = new User(); target.setId(1L);
-        User other = new User(); other.setId(99L);
+        User target = new User(); target.setId(1);
+        User other = new User(); other.setId(99);
 
         UserAchievement a1 = new UserAchievement();
         a1.setUser(target); a1.setAchievementType("amateur_author");
@@ -41,15 +41,15 @@ class UserAchievementRepositoryTest {
         repository.save(a2);
         repository.save(a3);
 
-        List<UserAchievement> achievements = repository.findByUser_Id(1L);
+        List<UserAchievement> achievements = repository.findByUser_Id(1);
 
         assertEquals(2, achievements.size());
-        assertEquals(1L, achievements.get(0).getUser().getId());
+        assertEquals(1, achievements.get(0).getUser().getId());
     }
 
     @Test
     void testReturnsEmptyListIfNoAchievements() {
-        List<UserAchievement> achievements = repository.findByUser_Id(999L);
+        List<UserAchievement> achievements = repository.findByUser_Id(999);
         assertEquals(0, achievements.size());
     }
 }
