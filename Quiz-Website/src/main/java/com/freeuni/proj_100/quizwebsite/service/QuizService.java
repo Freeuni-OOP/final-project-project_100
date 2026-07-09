@@ -41,7 +41,7 @@ public class QuizService {
     /**
      * Gets a quiz by its ID.
      */
-    public Optional<Quiz> getQuizById(Long id) {
+    public Optional<Quiz> getQuizById(Integer id) {
         return quizRepository.findById(id);
     }
 
@@ -55,7 +55,7 @@ public class QuizService {
     /**
      * Gets all quizzes created by a specific user.
      */
-    public List<Quiz> getQuizzesByCreator(Long creatorId) {
+    public List<Quiz> getQuizzesByCreator(Integer creatorId) {
         return quizRepository.findByCreatorId(creatorId);
     }
 

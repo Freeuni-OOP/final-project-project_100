@@ -15,7 +15,7 @@ import java.util.Optional;
  * alongside custom query methods for authentication and validation.
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     /**
      * Retrieves a user by their unique username.
      *

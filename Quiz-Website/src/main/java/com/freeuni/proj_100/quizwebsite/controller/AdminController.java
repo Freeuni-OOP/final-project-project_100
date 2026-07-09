@@ -64,7 +64,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 244 (No Content) status upon successful execution
      */
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         adminService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -79,7 +79,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 204 (No Content) status upon successful execution
      */
     @DeleteMapping("/quiz/{id}")
-    public ResponseEntity<Void> deleteQuiz(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteQuiz(@PathVariable Integer id) {
         adminService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }
@@ -94,7 +94,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 204 (No Content) status upon successful execution
      */
     @DeleteMapping("/quiz/{id}/history")
-    public ResponseEntity<Void> deleteQuizHistory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteQuizHistory(@PathVariable Integer id) {
         adminService.clearQuizHistory(id);
         return ResponseEntity.noContent().build();
     }
@@ -109,7 +109,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 204 (No Content) status upon successful execution
      */
     @PutMapping("/users/{id}/promote")
-    public ResponseEntity<Void> promoteToAdmin(@PathVariable Long id) {
+    public ResponseEntity<Void> promoteToAdmin(@PathVariable Integer id) {
         adminService.promoteToAdmin(id);
         return ResponseEntity.noContent().build();
     }

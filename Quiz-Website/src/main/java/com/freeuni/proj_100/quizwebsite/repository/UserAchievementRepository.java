@@ -11,10 +11,10 @@ import java.util.List;
  * Provides standard CRUD operations and custom queries for user achievements.
  */
 @Repository
-public interface UserAchievementRepository extends JpaRepository<UserAchievement, Long> {
+public interface UserAchievementRepository extends JpaRepository<UserAchievement, Integer> {
 
     /**
      * Finds all achievements earned by a specific user utilizing object relation traversal.
      */
-    List<UserAchievement> findByUser_Id(Long userId);
+    List<UserAchievement> findByUser_Id(Integer userId);
 }

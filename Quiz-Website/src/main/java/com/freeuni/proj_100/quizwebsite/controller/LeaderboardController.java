@@ -25,7 +25,7 @@ public class LeaderboardController {
      * Retrieves the leaderboard for a specific quiz.
      */
     @GetMapping("/{quizId}/leaderboard")
-    public ResponseEntity<List<QuizAttemptDTO>> getLeaderboard(@PathVariable Long quizId) {
+    public ResponseEntity<List<QuizAttemptDTO>> getLeaderboard(@PathVariable Integer quizId) {
         List<QuizAttemptDTO> leaderboard = leaderboardService.getTopLeaderboard(quizId, 50);
         return ResponseEntity.ok(leaderboard);
     }

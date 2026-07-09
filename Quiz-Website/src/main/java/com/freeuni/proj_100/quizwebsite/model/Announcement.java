@@ -17,7 +17,7 @@ public class Announcement {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="creator_id", nullable=false)
@@ -39,7 +39,7 @@ public class Announcement {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
+    public Integer getId() { return id; }
     public User getCreator() { return creator; }
     public String getTitle() { return title; }
     public String getContent() { return content; }

@@ -51,13 +51,13 @@ public class ProfileService {
         return targetUsername.equalsIgnoreCase(auth.getName()) ? "self" : "viewer";
     }
 
-    private List<QuizAttemptDTO> fetchRecentAttempts(Long userId) {
+    private List<QuizAttemptDTO> fetchRecentAttempts(Integer userId) {
         return attemptRepository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(userId).stream()
                 .map(a -> new QuizAttemptDTO(a.getId(), a.getUser().getUsername(), a.getQuizId(), a.getScore(), a.getTimeTakenSec(), a.getTakenAt()))
                 .toList();
     }
 
-    private List<String> fetchAchievements(Long userId) {
+    private List<String> fetchAchievements(Integer userId) {
         return achievementRepository.findByUser_Id(userId).stream()
                 .map(UserAchievement::getAchievementType)
                 .toList();
