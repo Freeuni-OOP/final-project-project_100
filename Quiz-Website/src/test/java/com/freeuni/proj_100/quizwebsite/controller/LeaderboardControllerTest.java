@@ -33,9 +33,9 @@ class LeaderboardControllerTest {
     @Test
     @WithMockUser
     void testReturnsPopulatedLeaderboard() throws Exception {
-        QuizAttemptDTO attempt = new QuizAttemptDTO(1L, "player1", 5L, 100, 45, LocalDateTime.now());
+        QuizAttemptDTO attempt = new QuizAttemptDTO(1, "player1", 5, 100, 45, LocalDateTime.now());
 
-        when(leaderboardService.getTopLeaderboard(5L, 50)).thenReturn(List.of(attempt));
+        when(leaderboardService.getTopLeaderboard(5, 50)).thenReturn(List.of(attempt));
 
         mockMvc.perform(get("/api/quizzes/5/leaderboard"))
                 .andExpect(status().isOk())
@@ -47,7 +47,7 @@ class LeaderboardControllerTest {
     @Test
     @WithMockUser
     void testReturnsEmptyLeaderboard() throws Exception {
-        when(leaderboardService.getTopLeaderboard(99L, 50)).thenReturn(List.of());
+        when(leaderboardService.getTopLeaderboard(99, 50)).thenReturn(List.of());
 
         mockMvc.perform(get("/api/quizzes/99/leaderboard"))
                 .andExpect(status().isOk())

@@ -48,7 +48,7 @@ public class AuthControllerTest {
     @Test
     void registerShouldReturn201WhenValid() {
         RegisterRequest req = new RegisterRequest("alice", "alice@example.com", "secret123");
-        AuthResponse mockResp = new AuthResponse(1L, "alice", "mock.token", false);
+        AuthResponse mockResp = new AuthResponse(1, "alice", "mock.token", false);
         when(authService.register(any(RegisterRequest.class))).thenReturn(mockResp);
 
         ResponseEntity<AuthResponse> response = authController.register(req);
@@ -57,7 +57,7 @@ public class AuthControllerTest {
         assertNotNull(response.getBody());
         assertEquals("mock.token", response.getBody().token());
         assertEquals("alice", response.getBody().username());
-        assertEquals(1L, response.getBody().userId());
+        assertEquals(1, response.getBody().userId());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class AuthControllerTest {
     @Test
     void loginShouldReturn200WhenValid() {
         LoginRequest req = new LoginRequest("alice", "secret123");
-        AuthResponse mockResponse = new AuthResponse(1L, "alice", "mock.token", false);
+        AuthResponse mockResponse = new AuthResponse(1, "alice", "mock.token", false);
         when(authService.login(any(LoginRequest.class))).thenReturn(mockResponse);
 
         ResponseEntity<AuthResponse> response = authController.login(req);
@@ -124,7 +124,7 @@ public class AuthControllerTest {
     @Test
     void meShouldReturnUserDetailsWhenValid() {
         User mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(1);
         mockUser.setUsername("alice");
         mockUser.setEmail("alice@example.com");
         
@@ -134,7 +134,7 @@ public class AuthControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().get("id"));
+        assertEquals(1, response.getBody().get("id"));
         assertEquals("alice", response.getBody().get("username"));
         assertEquals("alice@example.com", response.getBody().get("email"));
     }
