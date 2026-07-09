@@ -40,6 +40,7 @@ public class ProfileService {
             List<String> achievements = fetchAchievements(user.getId());
 
             return new ProfileResponseDTO(
+                    user.getId(), // MUST PASS THE ID HERE
                     user.getUsername(), user.getEmail(), user.isAdmin(),
                     user.getCreatedAt(), relation, attempts, achievements
             );
