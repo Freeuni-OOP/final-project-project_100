@@ -51,9 +51,17 @@ public class QuestionEntity {
      * Answers belonging to this question.
      * Loaded with an entity graph when quiz questions are fetched.
      */
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("slotNum ASC, id ASC")
     private List<AnswerEntity> answers = new ArrayList<>();
+
+    /**
+     * The parent Quiz entity that owns this question.
+     * Established as a Many-to-One relationship to support cascading persistence.
+     */
+    @ManyToOne
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 
     /**
      * Default constructor required by Hibernate for runtime entity instantiation.
@@ -192,4 +200,16 @@ public class QuestionEntity {
      * @return sequence tracking integer.
      */
     public int getSequence_num() { return sequenceNum; }
+
+    /**
+     * Gets the parent Quiz entity.
+     * @return the associated Quiz.
+     */
+    public Quiz getQuiz() { return quiz; }
+
+    /**
+     * Sets the parent Quiz entity.
+     * @param quiz the parent quiz.
+     */
+    public void setQuiz(Quiz quiz) { this.quiz = quiz; }
 }

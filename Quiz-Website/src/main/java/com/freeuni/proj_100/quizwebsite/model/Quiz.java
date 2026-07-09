@@ -2,6 +2,8 @@ package com.freeuni.proj_100.quizwebsite.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a quiz in the system.
@@ -48,6 +50,14 @@ public class Quiz {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    /**
+     * List of questions associated with this quiz.
+     * Configured with CascadeType.ALL so that saving this Quiz automatically
+     * persists all associated Questions and their Answers.
+     */
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionEntity> questions = new ArrayList<>();
+
     public Quiz() {}
 
     public Long getId() { return id; }
@@ -59,6 +69,7 @@ public class Quiz {
     public boolean isImmediateFeedback() { return immediateFeedback; }
     public boolean isAllowPractice() { return allowPractice; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public List<QuestionEntity> getQuestions() { return questions; }
 
     public void setId(Long id) { this.id = id; }
     public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
@@ -69,4 +80,5 @@ public class Quiz {
     public void setImmediateFeedback(boolean immediateFeedback) { this.immediateFeedback = immediateFeedback; }
     public void setAllowPractice(boolean allowPractice) { this.allowPractice = allowPractice; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setQuestions(List<QuestionEntity> questions) { this.questions = questions; }
 }
