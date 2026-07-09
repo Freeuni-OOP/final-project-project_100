@@ -1,6 +1,7 @@
 package com.freeuni.proj_100.quizwebsite.controller;
 
 import com.freeuni.proj_100.quizwebsite.dto.QuizSummaryDTO;
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import com.freeuni.proj_100.quizwebsite.security.JwtUtil;
 import com.freeuni.proj_100.quizwebsite.service.QuizSummaryService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(QuizSummaryController.class)
@@ -24,23 +26,26 @@ class QuizSummaryControllerTest {
     private QuizSummaryService quizSummaryService;
 
     @MockitoBean
+    private UserRepository userRepository;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     @Test
     @WithMockUser(username = "tazo")
-    void testReturnsQuizSummarySuccessfully() throws Exception {
-        // Using the empty constructor as defined in DTO class
+    void testReturnsQuizSummarySuccessfullyAndVerifiesPayload() throws Exception {
         QuizSummaryDTO mockSummary = new QuizSummaryDTO();
 
         when(quizSummaryService.getQuizSummary(1L, "tazo")).thenReturn(mockSummary);
 
         mockMvc.perform(get("/api/quizzes/1/summary"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                // Ensures the response body exists and is formatted as a JSON object
+                .andExpect(jsonPath("$").isMap());
     }
 
     @Test
     void testFailsIfUserNotAuthenticated() throws Exception {
-        // No @WithMockUser annotation means this request is anonymous
         mockMvc.perform(get("/api/quizzes/1/summary"))
                 .andExpect(status().isUnauthorized());
     }
