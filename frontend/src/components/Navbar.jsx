@@ -38,12 +38,22 @@ export default function Navbar() {
                             {label}
                         </Link>
                     ))}
+
                     {user?.isAdmin && (
                         <Link
                             to="/admin"
                             className={`${styles.link} ${location.pathname === '/admin' ? styles.linkActive : ''}`}
                         >
                             Admin
+                        </Link>
+                    )}
+
+                    {user?.username && (
+                        <Link
+                            to={`/profile/${user.username}`}
+                            className={`${styles.link} ${location.pathname.startsWith('/profile') ? styles.linkActive : ''}`}
+                        >
+                            My Profile
                         </Link>
                     )}
                 </div>
