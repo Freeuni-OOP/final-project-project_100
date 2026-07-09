@@ -28,6 +28,9 @@ public class FriendshipService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Initiates a friend request. Throws if a request is active, or if the sender was rejected.
+     */
     @Transactional
     public void sendFriendRequest(String currentUsername, String targetUsername) {
         User sender = userRepository.findByUsername(currentUsername)
@@ -60,6 +63,9 @@ public class FriendshipService {
         friendshipRepository.save(friendship);
     }
 
+    /**
+     * Accepts a pending invitation.
+     */
     @Transactional
     public void acceptFriendRequest(String currentUsername, Integer requesterId) {
         User currentUser = userRepository.findByUsername(currentUsername).orElseThrow();
@@ -78,6 +84,9 @@ public class FriendshipService {
         friendshipRepository.save(request);
     }
 
+    /**
+     * Flags a pending request as rejected to mitigate target spam.
+     */
     @Transactional
     public void rejectFriendRequest(String currentUsername, Integer requesterId) {
         User currentUser = userRepository.findByUsername(currentUsername).orElseThrow();
@@ -96,6 +105,9 @@ public class FriendshipService {
         friendshipRepository.save(request);
     }
 
+    /**
+     * Terminate an established relationship or cancel a pending outgoing submission.
+     */
     @Transactional
     public void removeFriend(String currentUsername, Integer targetUserId) {
         User currentUser = userRepository.findByUsername(currentUsername).orElseThrow();
