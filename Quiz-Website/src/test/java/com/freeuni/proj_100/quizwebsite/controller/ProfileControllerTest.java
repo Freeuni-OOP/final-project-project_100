@@ -1,12 +1,12 @@
 package com.freeuni.proj_100.quizwebsite.controller;
 
 import com.freeuni.proj_100.quizwebsite.dto.ProfileResponseDTO;
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import com.freeuni.proj_100.quizwebsite.security.JwtUtil;
 import com.freeuni.proj_100.quizwebsite.service.ProfileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,44 +32,47 @@ class ProfileControllerTest {
     private ProfileService profileService;
 
     @MockitoBean
+    private UserRepository userRepository;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     @Test
-    @WithMockUser
-    void testReturns404WhenUserIsMissing() throws Exception {
-        when(profileService.getProfileData(eq("ghost"), any())).thenReturn(Optional.empty());
+    @WithMockUser(username = "tazo")
+    void testGetProfileSuccessfullyAndVerifiesPayload() throws Exception {
+        ProfileResponseDTO mockProfile = new ProfileResponseDTO(
+                "tazo",
+                "tazo@example.com",
+                false,
+                LocalDateTime.now(),
+                "Beginner",
+                List.of(),
+                List.of()
+        );
 
-        mockMvc.perform(get("/api/profiles/ghost"))
+        when(profileService.getProfileData(eq("tazo"), any())).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(get("/api/profiles/tazo"))
+                .andExpect(status().isOk())
+                // Verifying the JSON maps correctly to the frontend's expectations
+                .andExpect(jsonPath("$.username").value("tazo"))
+                .andExpect(jsonPath("$.email").value("tazo@example.com"))
+                .andExpect(jsonPath("$.isAdmin").value(false));
+    }
+
+    @Test
+    @WithMockUser(username = "tazo")
+    void testGetProfileNotFound() throws Exception {
+        when(profileService.getProfileData(eq("unknown_user"), any())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/profiles/unknown_user"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "admin")
-    void testViewsOwnProfileAsSelf() throws Exception {
-        ProfileResponseDTO selfProfile = new ProfileResponseDTO(
-                "admin", "admin@test.com", true, LocalDateTime.now(), "self", List.of(), List.of()
-        );
-
-        when(profileService.getProfileData(eq("admin"), any())).thenReturn(Optional.of(selfProfile));
-
-        mockMvc.perform(get("/api/profiles/admin"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.relation").value("self"))
-                .andExpect(jsonPath("$.username").value("admin"));
+    void testFailsIfUserNotAuthenticated() throws Exception {
+        // No @WithMockUser annotation, testing raw anonymous access
+        mockMvc.perform(get("/api/profiles/tazo"))
+                .andExpect(status().isUnauthorized());
     }
-
-    @Test
-    @WithMockUser(username = "visitor")
-    void testViewsOtherProfileAsViewer() throws Exception {
-        ProfileResponseDTO viewerProfile = new ProfileResponseDTO(
-                "targetUser", "target@test.com", false, LocalDateTime.now(), "viewer", List.of(), List.of()
-        );
-
-        when(profileService.getProfileData(eq("targetUser"), any())).thenReturn(Optional.of(viewerProfile));
-
-        mockMvc.perform(get("/api/profiles/targetUser"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.relation").value("viewer"));
-    }
-
 }
