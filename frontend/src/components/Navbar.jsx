@@ -2,9 +2,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import styles from '../styles/navbar.module.css';
 
+// 1. Added the Friends link right into your array
 const NAV_LINKS = [
     { to: '/home',    label: 'Home' },
     { to: '/quizzes', label: 'Quizzes' },
+    { to: '/friends', label: 'Friends' },
 ];
 
 export default function Navbar() {
@@ -26,7 +28,7 @@ export default function Navbar() {
                 </Link>
 
                 <div className={styles.links}>
-                    {/* 1. Standard Links */}
+                    {/* Standard Links */}
                     {NAV_LINKS.map(({ to, label }) => (
                         <Link
                             key={to}
@@ -37,7 +39,7 @@ export default function Navbar() {
                         </Link>
                     ))}
 
-                    {/* 2. Your Dynamic Profile Link */}
+                    {/* Your Dynamic Profile Link */}
                     {user?.username && (
                         <Link
                             to={`/profile/${user.username}`}
@@ -47,15 +49,13 @@ export default function Navbar() {
                         </Link>
                     )}
 
-                    {/* 3. Temporary Quiz Summary Link for testing */}
+                    {/* Temporary Quiz Summary Link for testing */}
                     <Link
                         to="/quizzes/1/summary"
                         className={`${styles.link} ${location.pathname.includes('/summary') ? styles.linkActive : ''}`}
                     >
                         Quiz 1 Summary
                     </Link>
-
-                    {/* Admin link has been removed from here to match your App.jsx */}
                 </div>
 
                 <div className={styles.right}>

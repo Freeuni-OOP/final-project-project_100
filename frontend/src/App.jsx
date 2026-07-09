@@ -12,6 +12,7 @@ import HomePage from './pages/HomePage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import QuizSummaryPage from './pages/QuizSummaryPage.jsx';
 import QuizCreatePage from './pages/QuizCreatePage.jsx';
+import FriendsPage from './pages/FriendsPage.jsx'; // <-- NEW IMPORT
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                             <Route path="/profile/:username" element={<ProfilePage />} />
                             <Route path="/quizzes/:quizId/summary" element={<QuizSummaryPage />} />
                             <Route path="/quiz-create" element={<QuizCreatePage />} />
+                            <Route path="/friends" element={<FriendsPage />} /> {/* <-- NEW ROUTE */}
                         </Route>
                     </Route>
 

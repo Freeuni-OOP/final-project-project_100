@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { friendshipService } from '../api/friendshipService';
 import styles from '../styles/friends.module.css';
 
@@ -8,6 +8,10 @@ const FriendsPage = () => {
     const [requests, setRequests] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // NEW: Search state and navigation hook
+    const [searchQuery, setSearchQuery] = useState('');
+    const navigate = useNavigate();
 
     const loadData = async () => {
         setIsLoading(true);
@@ -31,12 +35,20 @@ const FriendsPage = () => {
 
     const handleAccept = async (userId) => {
         await friendshipService.acceptRequest(userId);
-        loadData(); // Refresh lists
+        loadData();
     };
 
     const handleReject = async (userId) => {
         await friendshipService.rejectRequest(userId);
-        loadData(); // Refresh lists
+        loadData();
+    };
+
+    // NEW: Safely route to the typed username's profile
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/profile/${searchQuery.trim()}`);
+        }
     };
 
     if (isLoading) return <div className={styles.loading}>Loading friends...</div>;
@@ -44,6 +56,29 @@ const FriendsPage = () => {
 
     return (
         <div className={styles.pageContainer}>
+
+            {/* NEW: Find a Friend Section */}
+            <div className={styles.section}>
+                <h2>Find a Friend</h2>
+                <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px' }}>
+                    <input
+                        type="text"
+                        placeholder="Enter username to search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{
+                            padding: '0.5rem',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                            flex: 1,
+                            fontSize: '1rem'
+                        }}
+                    />
+                    <button type="submit" className={styles.primaryBtn}>Search</button>
+                </form>
+            </div>
+
+            {/* Friend Requests Section */}
             <div className={styles.section}>
                 <h2>Friend Requests ({requests.length})</h2>
                 {requests.length === 0 ? (
@@ -65,6 +100,7 @@ const FriendsPage = () => {
                 )}
             </div>
 
+            {/* My Friends Section */}
             <div className={styles.section}>
                 <h2>My Friends ({friends.length})</h2>
                 {friends.length === 0 ? (
@@ -81,6 +117,7 @@ const FriendsPage = () => {
                     </ul>
                 )}
             </div>
+
         </div>
     );
 };
