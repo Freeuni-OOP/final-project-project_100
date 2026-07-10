@@ -96,6 +96,6 @@ public class Message {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return 31;
     }
 }
