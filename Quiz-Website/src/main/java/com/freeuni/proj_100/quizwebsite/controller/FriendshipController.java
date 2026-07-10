@@ -39,19 +39,19 @@ public class FriendshipController {
     }
 
     @PutMapping("/accept/{requesterId}")
-    public ResponseEntity<String> acceptRequest(@PathVariable Long requesterId, Principal principal) {
+    public ResponseEntity<String> acceptRequest(@PathVariable Integer requesterId, Principal principal) {
         friendshipService.acceptFriendRequest(principal.getName(), requesterId);
         return ResponseEntity.ok("Friend request accepted.");
     }
 
     @PutMapping("/reject/{requesterId}")
-    public ResponseEntity<String> rejectRequest(@PathVariable Long requesterId, Principal principal) {
+    public ResponseEntity<String> rejectRequest(@PathVariable Integer requesterId, Principal principal) {
         friendshipService.rejectFriendRequest(principal.getName(), requesterId);
         return ResponseEntity.ok("Friend request rejected.");
     }
 
     @DeleteMapping("/remove/{targetUserId}")
-    public ResponseEntity<String> removeFriend(@PathVariable Long targetUserId, Principal principal) {
+    public ResponseEntity<String> removeFriend(@PathVariable Integer targetUserId, Principal principal) {
         friendshipService.removeFriend(principal.getName(), targetUserId);
         return ResponseEntity.ok("Friend relation updated successfully.");
     }

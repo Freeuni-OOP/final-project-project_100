@@ -11,7 +11,6 @@ import java.security.Principal;
 @CrossOrigin(origins = "http://localhost:5173")
 public class QuizSummaryController {
 
-    // Inject new service here
     private final QuizSummaryService quizSummaryService;
 
     public QuizSummaryController(QuizSummaryService quizSummaryService) {
@@ -19,8 +18,7 @@ public class QuizSummaryController {
     }
 
     @GetMapping("/{quizId}/summary")
-    public ResponseEntity<QuizSummaryDTO> getQuizSummary(@PathVariable Long quizId, Principal principal) {
-        // Call new service
+    public ResponseEntity<QuizSummaryDTO> getQuizSummary(@PathVariable Integer quizId, Principal principal) {
         return ResponseEntity.ok(quizSummaryService.getQuizSummary(quizId, principal.getName()));
     }
 }

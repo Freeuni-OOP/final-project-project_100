@@ -2,7 +2,9 @@ package com.freeuni.proj_100.quizwebsite.controller;
 
 import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.dto.CreateAnnouncementRequest;
+import com.freeuni.proj_100.quizwebsite.dto.UserSummaryDto;
 import com.freeuni.proj_100.quizwebsite.dto.SiteStatsDto;
+import com.freeuni.proj_100.quizwebsite.dto.UserSummaryDto;
 import com.freeuni.proj_100.quizwebsite.service.AdminService;
 import com.freeuni.proj_100.quizwebsite.service.AnnouncementService;
 import jakarta.validation.Valid;
@@ -15,7 +17,7 @@ import java.util.List;
 /**
  * REST controller for administrative operations.
  * <p>
- * Provides protected endpoints for system administrators to manage users, quizzes, 
+ * Provides protected endpoints for system administrators to manage users, quizzes,
  * announcement creation, and retrieve application performance statistics.
  * </p>
  */
@@ -62,7 +64,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 244 (No Content) status upon successful execution
      */
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         adminService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -77,7 +79,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 204 (No Content) status upon successful execution
      */
     @DeleteMapping("/quiz/{id}")
-    public ResponseEntity<Void> deleteQuiz(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteQuiz(@PathVariable Integer id) {
         adminService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }
@@ -92,7 +94,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 204 (No Content) status upon successful execution
      */
     @DeleteMapping("/quiz/{id}/history")
-    public ResponseEntity<Void> deleteQuizHistory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteQuizHistory(@PathVariable Integer id) {
         adminService.clearQuizHistory(id);
         return ResponseEntity.noContent().build();
     }
@@ -107,7 +109,7 @@ public class AdminController {
      * @return a {@link ResponseEntity} with an HTTP 204 (No Content) status upon successful execution
      */
     @PutMapping("/users/{id}/promote")
-    public ResponseEntity<Void> promoteToAdmin(@PathVariable Long id) {
+    public ResponseEntity<Void> promoteToAdmin(@PathVariable Integer id) {
         adminService.promoteToAdmin(id);
         return ResponseEntity.noContent().build();
     }
@@ -131,11 +133,16 @@ public class AdminController {
      * Map to HTTP GET {@code /api/admin/announcements}.
      * </p>
      *
-     * @return a {@link ResponseEntity} containing a list of {@link AnnouncementDto} records 
+     * @return a {@link ResponseEntity} containing a list of {@link AnnouncementDto} records
      * and an HTTP 200 (OK) status
      */
     @GetMapping("/announcements")
     public ResponseEntity<List<AnnouncementDto>> getAllAnnouncements() {
         return ResponseEntity.ok(announcementService.getAllAnnouncements());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserSummaryDto>> getAllUsers() {
+        return ResponseEntity.ok(adminService.getAllUsers());
     }
 }

@@ -1,30 +1,37 @@
 package com.freeuni.proj_100.quizwebsite.controller;
 
+import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Quiz;
+import com.freeuni.proj_100.quizwebsite.model.User;
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import com.freeuni.proj_100.quizwebsite.service.QuizService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
+
 import java.util.Optional;
 
 /**
  * Controller for quiz-taking related HTTP requests.
+ * Handles routing and passes data to Thymeleaf templates.
  */
 @Controller
 @RequestMapping("/api/quiz")
 public class QuizController {
 
     private final QuizService quizService;
+    private final UserRepository userRepository;
 
     /**
      * Spring automatically injects QuizService here.
      */
-    public QuizController(QuizService quizService) {
+    public QuizController(QuizService quizService, UserRepository userRepository) {
         this.quizService = quizService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -32,7 +39,7 @@ public class QuizController {
      * Accessible at: GET /quiz/{id}
      */
     @GetMapping("/{id}")
-    public String quizPage(@PathVariable Long id, Model model) {
+    public String quizPage(@PathVariable Integer id, Model model) {
         Optional<Quiz> quiz = quizService.getQuizById(id);
         if (quiz.isEmpty()) {
             return "redirect:/";
@@ -46,7 +53,7 @@ public class QuizController {
      * Accessible at: GET /quiz/{id}/take
      */
     @GetMapping("/{id}/take")
-    public String takeQuiz(@PathVariable Long id, Model model) {
+    public String takeQuiz(@PathVariable Integer id, Model model) {
         Optional<Quiz> quiz = quizService.getQuizById(id);
         if (quiz.isEmpty()) {
             return "redirect:/";
@@ -60,7 +67,7 @@ public class QuizController {
      * Accessible at: POST /quiz/{id}/submit
      */
     @PostMapping("/{id}/submit")
-    public String submitQuiz(@PathVariable Long id,
+    public String submitQuiz(@PathVariable Integer id,
                              @RequestParam java.util.Map<String, String> answers,
                              Model model) {
         Optional<Quiz> quiz = quizService.getQuizById(id);
@@ -72,19 +79,27 @@ public class QuizController {
         model.addAttribute("answers", answers);
         return "quiz/results";
     }
+    /**
+     * Handles incoming React Axios requests to build and save a new quiz.
+     */
     @PostMapping("/create")
-    public ResponseEntity<String> createQuiz(@RequestBody QuizCreationDTO quizCreationDTO) {
-        // Basic validation check matching requirements
+    @ResponseBody
+    public ResponseEntity<String> createQuiz(
+            @RequestBody QuizCreationDTO quizCreationDTO,
+            @AuthenticationPrincipal String username
+    ) {
         if (quizCreationDTO.getTitle() == null || quizCreationDTO.getTitle().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Quiz title cannot be blank.");
         }
 
-        // Printing statements so incoming frontend payloads can immediately be seen in console, Will remove later
-        System.out.println("Received Quiz Creation Payload: " + quizCreationDTO.getTitle());
-        System.out.println("Number of questions submitted: " + quizCreationDTO.getQuestions().size());
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // TODO: QuizService logic will be called here once Temo integrates database entities
-
-        return ResponseEntity.ok("Quiz base draft received successfully");
+        try {
+            quizService.saveQuizFromDTO(quizCreationDTO, user.getId());
+            return ResponseEntity.ok("Quiz created successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error creating quiz: " + e.getMessage());
+        }
     }
 }
