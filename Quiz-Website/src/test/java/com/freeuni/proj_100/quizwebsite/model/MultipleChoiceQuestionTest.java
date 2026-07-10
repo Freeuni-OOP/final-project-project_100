@@ -1,6 +1,5 @@
-package com.freeuni.proj_100.quizwebsite;
+package com.freeuni.proj_100.quizwebsite.model;
 
-import com.freeuni.proj_100.quizwebsite.model.MultipleChoiceQuestion;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

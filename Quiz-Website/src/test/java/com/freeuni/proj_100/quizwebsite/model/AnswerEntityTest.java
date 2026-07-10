@@ -1,7 +1,5 @@
-package com.freeuni.proj_100.quizwebsite;
+package com.freeuni.proj_100.quizwebsite.model;
 
-import com.freeuni.proj_100.quizwebsite.model.AnswerEntity;
-import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

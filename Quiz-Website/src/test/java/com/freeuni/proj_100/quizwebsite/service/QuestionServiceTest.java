@@ -1,4 +1,4 @@
-package com.freeuni.proj_100.quizwebsite;
+package com.freeuni.proj_100.quizwebsite.service;
 
 import com.freeuni.proj_100.quizwebsite.model.AnswerEntity;
 import com.freeuni.proj_100.quizwebsite.model.MultipleChoiceQuestion;
@@ -8,7 +8,6 @@ import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
 import com.freeuni.proj_100.quizwebsite.model.Quiz;
 import com.freeuni.proj_100.quizwebsite.model.StandardQuestion;
 import com.freeuni.proj_100.quizwebsite.repository.QuestionRepository;
-import com.freeuni.proj_100.quizwebsite.service.QuestionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

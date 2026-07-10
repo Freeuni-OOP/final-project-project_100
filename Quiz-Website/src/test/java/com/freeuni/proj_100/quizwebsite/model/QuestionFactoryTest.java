@@ -1,6 +1,5 @@
-package com.freeuni.proj_100.quizwebsite;
+package com.freeuni.proj_100.quizwebsite.model;
 
-import com.freeuni.proj_100.quizwebsite.model.*;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
