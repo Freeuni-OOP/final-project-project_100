@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import styles from '../styles/homepage.module.css';
@@ -9,6 +9,8 @@ export default function HomePage() {
     const [announcements, setAnnouncements] = useState([]);
     const [recentQuizzes, setRecentQuizzes] = useState([])
     const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchData() {
@@ -74,8 +76,20 @@ export default function HomePage() {
                                 {q.description && (
                                     <div className={styles.quizCardDesc}>{q.description}</div>
                                 )}
-                                <div className={styles.quizCardDate}>
-                                    {new Date(q.createdAt).toLocaleDateString()}
+
+                                  <div className={styles.quizCardFooter}>
+                                    <div className={styles.quizCardDate}>
+                                        {new Date(q.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <button
+                                        className={styles.summaryBtn}
+                                        onClick={e => {
+                                            e.preventDefault()
+                                            navigate(`/quizzes/${q.id}/summary`)
+                                        }}
+                                    >
+                                        Details
+                                    </button>
                                 </div>
                             </Link>
                         ))}
