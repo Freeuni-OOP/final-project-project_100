@@ -33,10 +33,11 @@ public class AttemptService {
     }
 
     @Transactional
-    public AttemptResultDto submitAttempt(Integer quizId,
-                                          AttemptSubmitRequest request,
-                                          String username) {
-
+    public AttemptResultDto submitAttempt(
+            Integer quizId,
+            AttemptSubmitRequest request,
+            String username
+    ) {
         var quiz = quizService.getQuizForTaking(quizId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Quiz not found with id: " + quizId));
