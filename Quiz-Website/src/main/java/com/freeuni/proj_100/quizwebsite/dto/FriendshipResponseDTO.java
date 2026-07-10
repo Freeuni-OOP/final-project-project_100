@@ -5,7 +5,7 @@ package com.freeuni.proj_100.quizwebsite.dto;
  * to the frontend client.
  */
 public record FriendshipResponseDTO(
-        Long userId,
+        Integer userId,
         String username,
         String status
 ) {}

@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
  * Data Transfer Object for safely transmitting quiz attempt data to the frontend.
  */
 public record QuizAttemptDTO(
-        Long id,
+        Integer id,
         String username,
-        Long quizId,
+        Integer quizId,
         int score,
         int timeTakenSec,
         LocalDateTime takenAt

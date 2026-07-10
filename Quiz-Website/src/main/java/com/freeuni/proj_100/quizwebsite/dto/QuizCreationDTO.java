@@ -8,9 +8,9 @@ public class QuizCreationDTO {
     private boolean randomizeQuestions;
     private boolean singlePageLayout;
     private boolean immediateFeedback;
-    private List<Object> questions; // Temo will define the specific question objects later
+    private boolean allowPractice;
+    private List<QuestionCreationDTO> questions;
 
-    // Default Constructor
     public QuizCreationDTO() {}
 
     // Getters and Setters
@@ -29,6 +29,9 @@ public class QuizCreationDTO {
     public boolean isImmediateFeedback() { return immediateFeedback; }
     public void setImmediateFeedback(boolean immediateFeedback) { this.immediateFeedback = immediateFeedback; }
 
-    public List<Object> getQuestions() { return questions; }
-    public void setQuestions(List<Object> questions) { this.questions = questions; }
+    public boolean isAllowPractice() { return allowPractice; }
+    public void setAllowPractice(boolean allowPractice) { this.allowPractice = allowPractice; }
+
+    public List<QuestionCreationDTO> getQuestions() { return questions; }
+    public void setQuestions(List<QuestionCreationDTO> questions) { this.questions = questions; }
 }
