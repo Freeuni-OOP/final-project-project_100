@@ -47,15 +47,6 @@ export default function Navbar() {
                             Admin
                         </Link>
                     )}
-
-                    {user?.username && (
-                        <Link
-                            to={`/profile/${user.username}`}
-                            className={`${styles.link} ${location.pathname.startsWith('/profile') ? styles.linkActive : ''}`}
-                        >
-                            My Profile
-                        </Link>
-                    )}
                 </div>
 
                 <div className={styles.right}>

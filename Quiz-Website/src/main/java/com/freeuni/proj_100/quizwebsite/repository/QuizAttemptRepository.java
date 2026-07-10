@@ -9,10 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Repository interface for QuizAttempt entity.
- * Provides operations to query user histories and paginated quiz leaderboards.
- */
 @Repository
 public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Integer> {
 
@@ -29,13 +25,13 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Intege
     List<QuizAttempt> getTopPerformersAllTime(Integer quizId, Pageable pageable);
 
     /**
-     * Retrieves the history of non-practice quiz attempts for a specific user, ordered by most recent.
+     * Top performers in the last day.
      */
-    List<QuizAttempt> findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(Integer quizId, Pageable pageable);
+    @Query("SELECT a FROM QuizAttempt a WHERE a.quizId = :quizId AND a.isPractice = false AND a.takenAt >= :yesterday ORDER BY a.score DESC, a.timeTakenSec ASC")
+    List<QuizAttempt> getTopPerformersLastDay(Integer quizId, LocalDateTime yesterday, Pageable pageable);
 
     /**
-     * Retrieves the leaderboard for a specific quiz based on score (descending) and time taken (ascending).
-     * Now accepts a Pageable object to prevent memory overload.
+     * Performance of recent test takers (Ranked sequentially by when they took it).
      */
     @Query("SELECT a FROM QuizAttempt a WHERE a.quizId = :quizId AND a.isPractice = false ORDER BY a.takenAt DESC")
     List<QuizAttempt> getRecentTestTakers(Integer quizId, Pageable pageable);
