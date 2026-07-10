@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * REST controller for administrative operations.
  * <p>
- * Provides protected endpoints for system administrators to manage users, quizzes, 
+ * Provides protected endpoints for system administrators to manage users, quizzes,
  * announcement creation, and retrieve application performance statistics.
  * </p>
  */
@@ -133,7 +133,7 @@ public class AdminController {
      * Map to HTTP GET {@code /api/admin/announcements}.
      * </p>
      *
-     * @return a {@link ResponseEntity} containing a list of {@link AnnouncementDto} records 
+     * @return a {@link ResponseEntity} containing a list of {@link AnnouncementDto} records
      * and an HTTP 200 (OK) status
      */
     @GetMapping("/announcements")
