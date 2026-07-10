@@ -17,17 +17,11 @@ public class AnswerEntity {
     private int id;
 
     /**
-     * Foreign key referencing the question this answer belongs to.
-     */
-    @Column(name = "question_id", nullable = false)
-    private int questionId;
-
-    /**
      * Parent question entity.
      * This is read through the question_id column and is not written separately.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", insertable = false, updatable = false)
+    @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
     /**
@@ -54,14 +48,16 @@ public class AnswerEntity {
     public AnswerEntity() {}
 
     public int getId() { return id; }
-    public int getQuestionId() { return questionId; }
+
+    public int getQuestionId() {
+        return this.question != null ? question.getId() : 0;
+    }
+
     public QuestionEntity getQuestion() { return question; }
     public String getAnswerText() { return answerText; }
     public boolean isCorrect() { return correct; }
     public int getSlotNum() { return slotNum; }
-
     public void setId(int id) { this.id = id; }
-    public void setQuestionId(int questionId) { this.questionId = questionId; }
     public void setQuestion(QuestionEntity question) { this.question = question; }
     public void setAnswerText(String answerText) { this.answerText = answerText; }
     public void setCorrect(boolean correct) { this.correct = correct; }
