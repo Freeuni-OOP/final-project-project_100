@@ -14,7 +14,7 @@ CREATE TABLE users (
 CREATE TABLE friendships (
                              user_id INT NOT NULL,
                              friend_id INT NOT NULL,
-                             status ENUM('pending', 'accepted') DEFAULT 'pending',
+                             status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
                              established_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                              PRIMARY KEY (user_id, friend_id),
                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -117,4 +117,4 @@ CREATE TABLE user_achievements (
                                    earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                                    UNIQUE KEY uk_user_achievement (user_id, achievement_type)
-);
+);g
