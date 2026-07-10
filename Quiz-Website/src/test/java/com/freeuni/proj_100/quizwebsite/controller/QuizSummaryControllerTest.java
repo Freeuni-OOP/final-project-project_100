@@ -36,7 +36,7 @@ class QuizSummaryControllerTest {
     void testReturnsQuizSummarySuccessfullyAndVerifiesPayload() throws Exception {
         QuizSummaryDTO mockSummary = new QuizSummaryDTO();
 
-        when(quizSummaryService.getQuizSummary(1L, "tazo")).thenReturn(mockSummary);
+        when(quizSummaryService.getQuizSummary(1, "tazo")).thenReturn(mockSummary); // Changed 1L to 1
 
         mockMvc.perform(get("/api/quizzes/1/summary"))
                 .andExpect(status().isOk())

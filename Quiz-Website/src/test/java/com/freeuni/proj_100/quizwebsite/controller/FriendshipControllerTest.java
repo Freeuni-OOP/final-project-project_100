@@ -38,7 +38,7 @@ class FriendshipControllerTest {
     @Test
     @WithMockUser(username = "tazo")
     void testGetAcceptedFriendsReturnsList() throws Exception {
-        FriendshipResponseDTO friend = new FriendshipResponseDTO(2L, "john", "ACCEPTED");
+        FriendshipResponseDTO friend = new FriendshipResponseDTO(2, "john", "ACCEPTED");
         when(friendshipService.getAcceptedFriends("tazo")).thenReturn(List.of(friend));
 
         mockMvc.perform(get("/api/friends/accepted"))

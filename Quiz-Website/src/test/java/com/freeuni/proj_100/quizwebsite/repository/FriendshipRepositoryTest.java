@@ -26,12 +26,12 @@ class FriendshipRepositoryTest {
 
     @Test
     void testFindFriendshipBetweenUsers() {
-        Friendship f1 = new Friendship(1L, 2L, FriendshipStatus.PENDING);
+        Friendship f1 = new Friendship(1, 2, FriendshipStatus.PENDING);
         repository.save(f1);
 
         // Should find regardless of order
-        Optional<Friendship> result1 = repository.findFriendshipBetween(1L, 2L);
-        Optional<Friendship> result2 = repository.findFriendshipBetween(2L, 1L);
+        Optional<Friendship> result1 = repository.findFriendshipBetween(1, 2);
+        Optional<Friendship> result2 = repository.findFriendshipBetween(2, 1);
 
         assertTrue(result1.isPresent());
         assertTrue(result2.isPresent());
@@ -40,28 +40,28 @@ class FriendshipRepositoryTest {
 
     @Test
     void testFindAcceptedFriendsIds() {
-        repository.save(new Friendship(1L, 2L, FriendshipStatus.ACCEPTED)); // 1 and 2 are friends
-        repository.save(new Friendship(3L, 1L, FriendshipStatus.ACCEPTED)); // 3 and 1 are friends
-        repository.save(new Friendship(1L, 4L, FriendshipStatus.PENDING));  // 1 and 4 are NOT friends
+        repository.save(new Friendship(1, 2, FriendshipStatus.ACCEPTED)); // 1 and 2 are friends
+        repository.save(new Friendship(3, 1, FriendshipStatus.ACCEPTED)); // 3 and 1 are friends
+        repository.save(new Friendship(1, 4, FriendshipStatus.PENDING));  // 1 and 4 are NOT friends
 
-        List<Long> friendsOfUser1 = repository.findFriendsIdsByStatus(1L, FriendshipStatus.ACCEPTED);
+        List<Integer> friendsOfUser1 = repository.findFriendsIdsByStatus(1, FriendshipStatus.ACCEPTED);
 
         assertEquals(2, friendsOfUser1.size());
-        assertTrue(friendsOfUser1.contains(2L));
-        assertTrue(friendsOfUser1.contains(3L));
-        assertFalse(friendsOfUser1.contains(4L));
+        assertTrue(friendsOfUser1.contains(2));
+        assertTrue(friendsOfUser1.contains(3));
+        assertFalse(friendsOfUser1.contains(4));
     }
 
     @Test
     void testFindIncomingRequests() {
-        repository.save(new Friendship(2L, 1L, FriendshipStatus.PENDING)); // 2 sent to 1
-        repository.save(new Friendship(3L, 1L, FriendshipStatus.PENDING)); // 3 sent to 1
-        repository.save(new Friendship(1L, 4L, FriendshipStatus.PENDING)); // 1 sent to 4 (Outgoing, should not count)
+        repository.save(new Friendship(2, 1, FriendshipStatus.PENDING)); // 2 sent to 1
+        repository.save(new Friendship(3, 1, FriendshipStatus.PENDING)); // 3 sent to 1
+        repository.save(new Friendship(1, 4, FriendshipStatus.PENDING)); // 1 sent to 4 (Outgoing, should not count)
 
-        List<Long> requestsForUser1 = repository.findIncomingRequests(1L, FriendshipStatus.PENDING);
+        List<Integer> requestsForUser1 = repository.findIncomingRequests(1, FriendshipStatus.PENDING);
 
         assertEquals(2, requestsForUser1.size());
-        assertTrue(requestsForUser1.contains(2L));
-        assertTrue(requestsForUser1.contains(3L));
+        assertTrue(requestsForUser1.contains(2));
+        assertTrue(requestsForUser1.contains(3));
     }
 }

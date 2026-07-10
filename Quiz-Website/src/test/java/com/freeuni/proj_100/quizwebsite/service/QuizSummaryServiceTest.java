@@ -32,21 +32,21 @@ class QuizSummaryServiceTest {
         var limitTen = PageRequest.of(0, 10);
 
         // Stub out the 4 internal queries to return empty mock lists instantly
-        when(attemptRepository.getTopPerformersAllTime(1L, limitTen)).thenReturn(List.of());
-        when(attemptRepository.getTopPerformersLastDay(eq(1L), any(LocalDateTime.class), eq(limitTen))).thenReturn(List.of());
-        when(attemptRepository.getRecentTestTakers(1L, limitTen)).thenReturn(List.of());
-        when(attemptRepository.getUserPastPerformance(1L, "tazo")).thenReturn(List.of());
+        when(attemptRepository.getTopPerformersAllTime(1, limitTen)).thenReturn(List.of());
+        when(attemptRepository.getTopPerformersLastDay(eq(1), any(LocalDateTime.class), eq(limitTen))).thenReturn(List.of());
+        when(attemptRepository.getRecentTestTakers(1, limitTen)).thenReturn(List.of());
+        when(attemptRepository.getUserPastPerformance(1, "tazo")).thenReturn(List.of());
 
         // Execute the service layer
-        QuizSummaryDTO summary = quizSummaryService.getQuizSummary(1L, "tazo");
+        QuizSummaryDTO summary = quizSummaryService.getQuizSummary(1, "tazo");
 
         // Verify the response container was built smoothly
         assertNotNull(summary);
 
         // Verify that the service accurately invoked all 4 custom queries
-        verify(attemptRepository).getTopPerformersAllTime(1L, limitTen);
-        verify(attemptRepository).getTopPerformersLastDay(eq(1L), any(LocalDateTime.class), eq(limitTen));
-        verify(attemptRepository).getRecentTestTakers(1L, limitTen);
-        verify(attemptRepository).getUserPastPerformance(1L, "tazo");
+        verify(attemptRepository).getTopPerformersAllTime(1, limitTen);
+        verify(attemptRepository).getTopPerformersLastDay(eq(1), any(LocalDateTime.class), eq(limitTen));
+        verify(attemptRepository).getRecentTestTakers(1, limitTen);
+        verify(attemptRepository).getUserPastPerformance(1, "tazo");
     }
 }
