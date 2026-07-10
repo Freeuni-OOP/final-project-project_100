@@ -45,7 +45,7 @@ export default function useQuiz(quizId, isPractice = false) {
         try {
             const res = await api.post(`/attempts/${quizId}/check-answer`, {
                 questionId: currentQuestion.id,
-                response: answers[currentQuestion.id]
+                response: answers[currentQuestion.id] || ''
             });
             setFeedback(res.data);
         } finally {

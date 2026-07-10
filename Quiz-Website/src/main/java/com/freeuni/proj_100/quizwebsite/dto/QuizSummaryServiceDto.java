@@ -2,7 +2,7 @@ package com.freeuni.proj_100.quizwebsite.dto;
 
 import java.time.LocalDateTime;
 
-public record QuizSummaryDto(
+public record QuizSummaryServiceDto(
         Integer id,
         String title,
         String description,
