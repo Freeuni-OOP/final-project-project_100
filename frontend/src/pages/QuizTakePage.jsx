@@ -27,8 +27,7 @@ export default function QuizTakePage() {
     if (loading) return <div className={styles.center}>Loading quiz...</div>;
     if (error) return <div className={styles.centerError}>{error}</div>;
     if (!quiz) return null;
-
-    if (!quiz.singlePage && !currentQuestion) return null
+    if (!quiz.questions) return <div className={styles.center}>Loading questions...</div>
 
     if (quiz.singlePage) {
         return (
@@ -62,6 +61,8 @@ export default function QuizTakePage() {
             </div>
         )
     }
+
+    if (!quiz.singlePage && !currentQuestion) return null
 
     return (
         <div className={styles.page}>

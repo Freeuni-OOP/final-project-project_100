@@ -19,7 +19,6 @@ export default function useQuiz(quizId, isPractice = false) {
                 const res = await api.get(`/quizzes/${quizId}/start`, {
                     params: { practice: isPractice }
                 });
-                console.log('Quiz response:', res.data)  // ← add this
 
                 setQuiz(res.data);
                 startTime.current = Date.now();
