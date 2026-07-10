@@ -85,4 +85,17 @@ public class Message {
      * No-arg constructor required by JPA for reflective instantiation.
      */
     public Message() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Message)) return false;
+        Message other = (Message) o;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
