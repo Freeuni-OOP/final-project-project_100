@@ -35,17 +35,17 @@ export default function useQuiz(quizId, isPractice = false) {
         setAnswers(prev => ({ ...prev, [questionId]: resp }));
     }
 
-    const currQuestion = quiz?.questions?.[currentIdx];
+    const currentQuestion = quiz?.questions?.[currentIdx];
     const isLastQuestion = quiz && currentIdx === quiz.questions.length - 1;
 
     const checkCurrAnswer = async () => {
-        if (!quiz.immediateFeedback || !currQuestion) return;
+        if (!quiz.immediateFeedback || !currentQuestion) return;
         setSubmitting(true);
 
         try {
             const res = await api.post(`/attemps/${quizId}/check-answer`, {
-                questionId: currQuestion.id,
-                response: answers[currQuestion.id]
+                questionId: currentQuestion.id,
+                response: answers[currentQuestion.id]
             });
             setFeedback(res.data);
         } finally {
@@ -54,12 +54,12 @@ export default function useQuiz(quizId, isPractice = false) {
     };
 
     const goNext = () => {
-        setFeedBack(null);
+        setFeedback(null);
         setCurrentIdx(i => Math.min(i+1, quiz.questions.length - 1));
     }
 
     const goBack = () => {
-        setFeedBack(null);
+        setFeedback(null);
         setCurrentIdx(i => Math.max(i-1, 0));
     }
 
@@ -88,7 +88,7 @@ export default function useQuiz(quizId, isPractice = false) {
     }, [quizId, answers, isPractice]);
 
     return {
-        quiz, loading, error, currQuestion, currentIdx,
+        quiz, loading, error, currentQuestion, currentIdx,
         isLastQuestion, answers, setAnswer, feedback,
         checkCurrAnswer, goNext, goBack,
         result, submitQuiz, submitting
