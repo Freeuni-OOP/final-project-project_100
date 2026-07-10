@@ -15,7 +15,6 @@ export default function Navbar() {
     // Moved inside the component so it can use the dynamic user data
     const NAV_LINKS = [
         { to: '/home',    label: 'Home' },
-        { to: '/quizzes', label: 'Quizzes' },
         { to: '/friends', label: 'Friends' },
         { to: `/profile/${user?.username}`, label: 'My Profile' },
     ];

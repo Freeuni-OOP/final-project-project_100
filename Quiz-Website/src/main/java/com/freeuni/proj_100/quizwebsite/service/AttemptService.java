@@ -2,11 +2,14 @@ package com.freeuni.proj_100.quizwebsite.service;
 
 import com.freeuni.proj_100.quizwebsite.dto.AttemptResultDto;
 import com.freeuni.proj_100.quizwebsite.dto.AttemptSubmitRequest;
+import com.freeuni.proj_100.quizwebsite.dto.CheckAnswerDto;
+import com.freeuni.proj_100.quizwebsite.dto.CheckAnswerRequest;
 import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.AnswerEntity;
 import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
 import com.freeuni.proj_100.quizwebsite.model.QuizAttempt;
 import com.freeuni.proj_100.quizwebsite.model.User;
+import com.freeuni.proj_100.quizwebsite.repository.QuestionRepository;
 import com.freeuni.proj_100.quizwebsite.repository.QuizAttemptRepository;
 import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -23,14 +26,36 @@ public class AttemptService {
     private final QuizService quizService;
     private final QuizAttemptRepository quizAttemptRepository;
     private final UserRepository userRepository;
+    private final QuestionRepository questionRepository;
 
-    public AttemptService(QuizService quizService,
-                          QuizAttemptRepository quizAttemptRepository,
-                          UserRepository userRepository) {
+    public AttemptService(
+            QuizService quizService,
+            QuizAttemptRepository quizAttemptRepository,
+            UserRepository userRepository,
+            QuestionRepository questionRepo
+    ) {
         this.quizService = quizService;
         this.quizAttemptRepository = quizAttemptRepository;
         this.userRepository = userRepository;
+        this.questionRepository = questionRepo;
     }
+    
+    public CheckAnswerDto checkAnswer(CheckAnswerRequest request) {
+    QuestionEntity question = questionRepository.findById(request.questionId().intValue())
+            .orElseThrow(() -> new ResourceNotFoundException(
+                    "Question not found with id: " + request.questionId()));
+
+    String correctAnswer = question.getAnswers().stream()
+            .filter(AnswerEntity::isCorrect)
+            .map(AnswerEntity::getAnswerText)
+            .findFirst()
+            .orElse("");
+
+    boolean correct = correctAnswer.equalsIgnoreCase(
+            request.response() == null ? "" : request.response().trim());
+
+    return new CheckAnswerDto(correct, correctAnswer);
+}
 
     @Transactional
     public AttemptResultDto submitAttempt(
