@@ -14,11 +14,14 @@ public class QuestionFactoryTest {
 
     @BeforeEach
     public void setUp(){
+        Quiz quiz = new Quiz();
+        quiz.setId(1);
+
         entity = new QuestionEntity();
         entity.setId(1);
-        entity.setQuiz_id(1);
+        entity.setQuiz(quiz);
         entity.setPrompt("Some prompt");
-        entity.setImage_url("Some image url");
+        entity.setImageUrl("Some image url");
 
         answers = List.of("Flynn Taggart");
         options = List.of("Flynn Taggart", "Kratos Of Sparta", "Alexios Deimos");
@@ -26,7 +29,7 @@ public class QuestionFactoryTest {
 
     @Test
     public void testStandardQuestionCreation(){
-        entity.setQ_type("STANDARD");
+        entity.setQType("STANDARD");
         Question question = QuestionFactory.createQuestion(entity, answers, options);
 
         assertInstanceOf(StandardQuestion.class, question);
@@ -38,7 +41,7 @@ public class QuestionFactoryTest {
 
     @Test
     public void testFillInTheBlankQuestionCreation(){
-        entity.setQ_type("FILL_IN_THE_BLANK");
+        entity.setQType("FILL_IN_THE_BLANK");
         Question question = QuestionFactory.createQuestion(entity, answers, options);
 
         assertInstanceOf(FillInTheBlankQuestion.class, question);
@@ -50,7 +53,7 @@ public class QuestionFactoryTest {
 
     @Test
     public void testMultipleChoiceQuestionCreation(){
-        entity.setQ_type("MULTIPLE_CHOICE");
+        entity.setQType("MULTIPLE_CHOICE");
         Question question = QuestionFactory.createQuestion(entity, answers, options);
 
         assertInstanceOf(MultipleChoiceQuestion.class, question);
@@ -62,20 +65,20 @@ public class QuestionFactoryTest {
 
     @Test
     public void testPictureResponseQuestionCreation(){
-        entity.setQ_type("PICTURE_RESPONSE");
+        entity.setQType("PICTURE_RESPONSE");
         Question question = QuestionFactory.createQuestion(entity, answers, options);
 
         assertInstanceOf(PictureResponseQuestion.class, question);
         assertEquals(1, question.getQuestionID());
         assertEquals(1, question.getQuizID());
         assertEquals("Some prompt", question.getQuestionPrompt());
-        assertEquals("Some image url", entity.getImage_url());
+        assertEquals("Some image url", entity.getImageUrl());
         assertEquals("PICTURE_RESPONSE", question.getQuestionType());
     }
 
     @Test
     public void testNullOrEmptyQuestionType(){
-        entity.setQ_type("");
+        entity.setQType("");
 
         IllegalArgumentException illegalArgumentException =
                 assertThrows(IllegalArgumentException.class, ()-> {
@@ -84,7 +87,7 @@ public class QuestionFactoryTest {
 
         assertEquals("Question type can't be null or empty.", illegalArgumentException.getMessage());
 
-        entity.setQ_type(null);
+        entity.setQType(null);
 
         illegalArgumentException =
                 assertThrows(IllegalArgumentException.class, ()-> {
@@ -96,7 +99,7 @@ public class QuestionFactoryTest {
 
     @Test
     public void testUnknownQuestionType(){
-        entity.setQ_type("Some Other Type Of Question");
+        entity.setQType("Some Other Type Of Question");
 
         IllegalArgumentException illegalArgumentException =
                 assertThrows(IllegalArgumentException.class, ()-> {

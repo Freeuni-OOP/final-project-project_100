@@ -10,29 +10,32 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for AnswerEntity field accessors.
  */
 public class AnswerEntityTest {
+    
     /**
      * Verifies that all AnswerEntity setters and getters preserve values.
      */
     @Test
     public void testSettersAndGetters() {
         QuestionEntity question = new QuestionEntity();
-        AnswerEntity answer = new AnswerEntity();
+        question.setId(10); 
 
+        AnswerEntity answer = new AnswerEntity();
         answer.setId(1);
-        answer.setQuestionId(10);
+        
         answer.setQuestion(question);
+        
         answer.setAnswerText("George Washington");
         answer.setCorrect(true);
         answer.setSlotNum(2);
 
         assertEquals(1, answer.getId());
-        assertEquals(10, answer.getQuestionId());
         assertSame(question, answer.getQuestion());
+        assertEquals(10, answer.getQuestion().getId());
         assertEquals("George Washington", answer.getAnswerText());
         assertTrue(answer.isCorrect());
         assertEquals(2, answer.getSlotNum());
     }
-
+    
     /**
      * Verifies default values on a newly constructed AnswerEntity.
      */
@@ -41,7 +44,6 @@ public class AnswerEntityTest {
         AnswerEntity answer = new AnswerEntity();
 
         assertEquals(0, answer.getId());
-        assertEquals(0, answer.getQuestionId());
         assertNull(answer.getQuestion());
         assertNull(answer.getAnswerText());
         assertFalse(answer.isCorrect());

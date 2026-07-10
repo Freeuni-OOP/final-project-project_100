@@ -20,7 +20,7 @@ function App() {
                 <Route element={<PrivateRoute />}>
                     <Route element={<Layout />}>
                         <Route path="/home" element={<HomePage />} />
-                        <Route path="/quiz-create" element={<QuizCreatePage />} />
+                        <Route path="/quizzes/create" element={<QuizCreatePage />} />
 
                         <Route element={<AdminRoute />}>
                             <Route path="/admin" element={<AdminPage />} />
