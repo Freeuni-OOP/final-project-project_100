@@ -79,7 +79,7 @@ public class AdminService {
         announcement.setCreator(creator);
 
         Announcement saved = announcementRepo.save(announcement);
-
+        
         return announcementService.toDto(saved);
     }
 
@@ -102,7 +102,7 @@ public class AdminService {
     /**
      * Deletes a user from the platform database by their unique ID.
      * <p>
-     * Guarded by a transaction. This action will fail intentionally if the target user
+     * Guarded by a transaction. This action will fail intentionally if the target user 
      * is also an administrator.
      * </p>
      *
