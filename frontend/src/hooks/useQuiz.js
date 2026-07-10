@@ -43,7 +43,7 @@ export default function useQuiz(quizId, isPractice = false) {
         setSubmitting(true);
 
         try {
-            const res = await api.post(`/attemps/${quizId}/check-answer`, {
+            const res = await api.post(`/attempts/${quizId}/check-answer`, {
                 questionId: currentQuestion.id,
                 response: answers[currentQuestion.id]
             });

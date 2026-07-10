@@ -64,7 +64,7 @@ public class AttemptService {
             if (correct) score++;
 
             results.add(new AttemptResultDto.QuestionResultDto(
-                    (long) question.getId(),
+                    question.getId(),
                     correct,
                     correctAnswer,
                     userAnswer

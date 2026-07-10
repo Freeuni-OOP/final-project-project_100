@@ -25,8 +25,5 @@ public interface QuizRepository extends JpaRepository<Quiz, Integer> {
     @Query("SELECT DISTINCT q FROM Quiz q LEFT JOIN FETCH q.questions WHERE q.id = :id")
     Optional<Quiz> findByIdWithQuestions(@Param("id") Integer id);
 
-    @Query("SELECT DISTINCT q FROM QuestionEntity q LEFT JOIN FETCH q.answers WHERE q.quiz.id = :quizId")
-    List<QuestionEntity> findQuestionsWithAnswers(@Param("quizId") Integer quizId);
-    
     List<Quiz> findTop10ByOrderByCreatedAtDesc();
 }
