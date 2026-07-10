@@ -11,12 +11,11 @@ export default function QuizTakePage() {
     const navigate = useNavigate()
 
     const {
-        quiz, loading, error, currentQuestion, currentIndex,
+        quiz, loading, error, currentQuestion, currentIdx,
         isLastQuestion, answers, setAnswer, feedback,
-        checkCurrentAnswer, goNext, goBack,
+        checkCurrAnswer, goNext, goBack,
         result, submitQuiz, submitting
     } = useQuiz(quizId, isPractice);
-
 
     useEffect(() => {
         if (result) {
@@ -27,7 +26,13 @@ export default function QuizTakePage() {
     if (loading) return <div className={styles.center}>Loading quiz...</div>;
     if (error) return <div className={styles.centerError}>{error}</div>;
     if (!quiz) return null;
-    if (!quiz.questions) return <div className={styles.center}>Loading questions...</div>
+
+    if (!quiz.singlePage && !currentQuestion) {
+        if (quiz.questions?.length === 0) {
+            return <div className={styles.centerError}>This quiz has no questions.</div>
+        }
+        return <div className={styles.center}>Loading questions...</div>
+    }
 
     if (quiz.singlePage) {
         return (
@@ -62,18 +67,16 @@ export default function QuizTakePage() {
         )
     }
 
-    if (!quiz.singlePage && !currentQuestion) return null
-
     return (
         <div className={styles.page}>
             <div className={styles.progressBar}>
                 <div
                     className={styles.progressFill}
-                    style={{ width: `${((currentIndex + 1) / quiz.questions.length) * 100}%` }}
+                    style={{ width: `${((currentIdx + 1) / quiz.questions.length) * 100}%` }}
                 />
             </div>
             <div className={styles.progressLabel}>
-                Question {currentIndex + 1} of {quiz.questions.length}
+                Question {currentIdx + 1} of {quiz.questions.length}
                 {isPractice && <span className={styles.practiceBadge}>Practice mode</span>}
             </div>
 
@@ -99,7 +102,7 @@ export default function QuizTakePage() {
                 <button
                     className={styles.navBtn}
                     onClick={goBack}
-                    disabled={currentIndex === 0 || submitting}
+                    disabled={currentIdx === 0 || submitting}
                 >
                     Back
                 </button>
@@ -107,7 +110,7 @@ export default function QuizTakePage() {
                 {quiz.immediateFeedback && !feedback && (
                     <button
                         className={styles.checkBtn}
-                        onClick={checkCurrentAnswer}
+                        onClick={checkCurrAnswer}
                         disabled={!answers[currentQuestion.id] || submitting}
                     >
                         Check Answer
