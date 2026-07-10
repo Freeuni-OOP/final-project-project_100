@@ -80,7 +80,7 @@ export default function QuizCreatePage() {
             [updated[index], updated[index - 1]] = [updated[index - 1], updated[index]];
             return {...prev, questions: updated}
         })
-    }
+    };
 
     const moveQuestionDown = (index) => {
         setQuizData(prev => {
@@ -89,7 +89,18 @@ export default function QuizCreatePage() {
             [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
             return {...prev, questions: updated}
         })
-    }
+    };
+
+    const duplicateQuesiton = (question) => {
+        setQuizData(prev => ({
+            ...prev,
+            questions: [...prev.questions, {
+                ...question,
+                id: Date.now(),
+                options: question.options ? [...question.options] : []
+            }]
+        }));
+    };
 
     const addQuestionToQuiz = () => {
         if (!currentQuestion.questionText.trim()) {
@@ -259,6 +270,8 @@ export default function QuizCreatePage() {
                                         <div style={{display: 'flex', gap: '8px', alignItems: 'center' }}>
                                             <button onClick={() => startEditingQuestion(q)}
                                                     style={{ color: 'blue', background: 'none', border: 'none', cursor: 'pointer'}}>Edit</button>
+                                            <button onClick={() => duplicateQuesiton(q)}
+                                                    style={{ color: 'pink', background: 'none', border: 'none', cursor: 'pointer'}}>Duplicate</button>
                                             <button onClick={() => removeQuestion(q.id)}
                                                     style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer'}}>Delete</button>
                                             <button disabled={index === 0} onClick={() => moveQuestionUp(index)}
