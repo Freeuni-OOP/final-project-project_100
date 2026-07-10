@@ -63,7 +63,7 @@ public class Message {
 
 
     /// Getters
-    public int getId()            { return id; }
+    public Integer getId()            { return id; }
     public int getSenderId()      { return senderId; }
     public int getReceiverId()    { return receiverId; }
     public MessageType getType()   { return type; }
