@@ -2,8 +2,8 @@ import styles from '../styles/questionRenderer.module.css';
 
 export default function QuestionRenderer({ question, value, onChange, disabled }) {
   switch (question.qType) {
-    case 'STANDARD':
-    case 'FILL_IN_THE_BLANK':
+    case 'standard':
+    case 'fill-in-the-blank':
       return (
         <input
           className={styles.textInput}
@@ -16,26 +16,28 @@ export default function QuestionRenderer({ question, value, onChange, disabled }
         />
       );
 
-    case 'MULTIPLE_CHOICE':
+    case 'multiple-choice':
       return (
         <div className={styles.options}>
-          {question.options.map(opt => (
-            <label key={opt.id} className={styles.option}>
-              <input
-                type="radio"
-                name={`question-${question.id}`}
-                value={opt.id}
-                checked={value === opt.id}
-                onChange={() => onChange(opt.id)}
-                disabled={disabled}
-              />
-              <span>{opt.text}</span>
-            </label>
+          {question.answers.map(opt => (
+            opt.answerText?.trim() && (
+                <label key={opt.id} className={styles.option}>
+                    <input
+                        type="radio"
+                        name={`question-${question.id}`}
+                        value={opt.id}
+                        checked={value === opt.id}
+                        onChange={() => onChange(opt.id)}
+                        disabled={disabled}
+                    />
+                    <span>{opt.answerText}</span>
+                </label>
+            )
           ))}
         </div>
       );
 
-    case 'PICTURE_RESPONSE':
+    case 'picture-response':
       return (
         <div className={styles.pictureQuestion}>
           <img
