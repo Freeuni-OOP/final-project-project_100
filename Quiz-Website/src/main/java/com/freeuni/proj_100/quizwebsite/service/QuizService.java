@@ -1,10 +1,13 @@
 package com.freeuni.proj_100.quizwebsite.service;
 
+import com.freeuni.proj_100.quizwebsite.dto.QuizSummaryDto;
 import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
 import com.freeuni.proj_100.quizwebsite.model.Quiz;
+import com.freeuni.proj_100.quizwebsite.model.User;
 import com.freeuni.proj_100.quizwebsite.repository.AnswerRepository;
 import com.freeuni.proj_100.quizwebsite.repository.QuestionRepository;
 import com.freeuni.proj_100.quizwebsite.repository.QuizRepository;
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +25,19 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
 
     /**
      * Spring automatically injects QuizRepository here.
      */
-    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository) {
+    public QuizService(
+            QuizRepository quizRepository,
+            QuestionRepository questionRepository,
+            UserRepository userRepository
+    ) {
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -69,6 +78,28 @@ public class QuizService {
         quiz.getQuestions().addAll(questionsWithAnswers);
 
         return Optional.of(quiz);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuizSummaryDto> getRecentQuizzes() {
+        return quizRepository.findTop10ByOrderByCreatedAtDesc()
+                .stream()
+                .map(q -> new QuizSummaryDto(
+                        q.getId(),
+                        q.getTitle(),
+                        q.getDescription(),
+                        resolveCreatorUsername(q.getCreatorId()),
+                        q.getCreatedAt(),
+                        q.getQuestions().size()
+                ))
+                .toList();
+    }
+
+    private String resolveCreatorUsername(Integer creatorId) {
+        if (creatorId == null) return "Unknown";
+        return userRepository.findById(creatorId)
+                .map(User::getUsername)
+                .orElse("Unknown");
     }
 
     /**
