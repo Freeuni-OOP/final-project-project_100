@@ -44,7 +44,7 @@ public class User implements UserDetails {
     private String passwordHash;
 
     /**
-     * The timestamp indicating when the user record was created. 
+     * The timestamp indicating when the user record was created.
      * This value cannot be updated after creation.
      */
     @Column(nullable=false, updatable=false)
@@ -92,7 +92,7 @@ public class User implements UserDetails {
     }
 
     /**
-     * JPA lifecycle callback method that automatically sets the {@code createdAt} 
+     * JPA lifecycle callback method that automatically sets the {@code createdAt}
      * timestamp to the current date and time before the entity is persisted.
      */
     @PrePersist

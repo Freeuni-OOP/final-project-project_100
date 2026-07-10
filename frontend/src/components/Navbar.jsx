@@ -2,10 +2,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import styles from '../styles/navbar.module.css';
 
+// 1. Added the Friends link right into your array
 const NAV_LINKS = [
-    { to: '/home',   label: 'Home' },
+    { to: '/home',    label: 'Home' },
     { to: '/quizzes', label: 'Quizzes' },
-]
+    { to: '/friends', label: 'Friends' },
+];
 
 export default function Navbar() {
     const { user, logout } = useAuth();
@@ -26,6 +28,7 @@ export default function Navbar() {
                 </Link>
 
                 <div className={styles.links}>
+                    {/* Standard Links */}
                     {NAV_LINKS.map(({ to, label }) => (
                         <Link
                             key={to}
@@ -35,14 +38,24 @@ export default function Navbar() {
                             {label}
                         </Link>
                     ))}
-                    {user?.isAdmin && (
+
+                    {/* Your Dynamic Profile Link */}
+                    {user?.username && (
                         <Link
-                            to="/admin"
-                            className={`${styles.link} ${location.pathname === '/admin' ? styles.linkActive : ''}`}
+                            to={`/profile/${user.username}`}
+                            className={`${styles.link} ${location.pathname.startsWith('/profile') ? styles.linkActive : ''}`}
                         >
-                            Admin
+                            My Profile
                         </Link>
                     )}
+
+                    {/* Temporary Quiz Summary Link for testing */}
+                    <Link
+                        to="/quizzes/1/summary"
+                        className={`${styles.link} ${location.pathname.includes('/summary') ? styles.linkActive : ''}`}
+                    >
+                        Quiz 1 Summary
+                    </Link>
                 </div>
 
                 <div className={styles.right}>

@@ -1,38 +1,53 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext.jsx'
-import PrivateRoute from './components/PrivateRoute.jsx'
-import AdminRoute from './components/AdminRoute.jsx'
-import LoginPage from './pages/LoginPage.jsx'
-import AdminPage from './pages/AdminPage.jsx'
-import RegisterPage from './pages/RegisterPage.jsx'
-import Layout from './components/Layout.jsx'
-import QuizCreatePage from "./pages/QuizCreatePage.jsx";
-import HomePage from "./pages/HomePage.jsx";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext.jsx';
+
+// Security & Layout Components
+import PrivateRoute from './components/PrivateRoute.jsx';
+import AdminRoute from './components/AdminRoute.jsx';
+import Layout from './components/Layout.jsx';
+
+// Pages
+import LoginPage from './pages/LoginPage.jsx';
+import RegisterPage from './pages/RegisterPage.jsx';
+import HomePage from './pages/HomePage.jsx';
+import AdminPage from './pages/AdminPage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
+import QuizSummaryPage from './pages/QuizSummaryPage.jsx';
+import QuizCreatePage from './pages/QuizCreatePage.jsx';
+import FriendsPage from './pages/FriendsPage.jsx';
 
 function App() {
-  return (
-    <AuthProvider>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    {/* Public Routes */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
 
-                <Route element={<PrivateRoute />}>
-                    <Route element={<Layout />}>
-                        <Route path="/home" element={<HomePage />} />
-                        <Route path="/quizzes/create" element={<QuizCreatePage />} />
+                    {/* Protected Routes wrapped in the Layout Navbar */}
+                    <Route element={<PrivateRoute />}>
+                        <Route element={<Layout />}>
+                            {/* General User Routes */}
+                            <Route path="/home" element={<HomePage />} />
+                            <Route path="/profile/:username" element={<ProfilePage />} />
+                            <Route path="/quizzes/:quizId/summary" element={<QuizSummaryPage />} />
+                            <Route path="/quizzes/create" element={<QuizCreatePage />} />
+                            <Route path="/friends" element={<FriendsPage />} />
 
-                        <Route element={<AdminRoute />}>
-                            <Route path="/admin" element={<AdminPage />} />
+                            {/* Admin Only Routes */}
+                            <Route element={<AdminRoute />}>
+                                <Route path="/admin" element={<AdminPage />} />
+                            </Route>
                         </Route>
                     </Route>
-                </Route>
 
-                <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-        </BrowserRouter>
-    </AuthProvider>
-  )
+                    {/* Fallback for unknown URLs */}
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }
 
-export default App
+export default App;

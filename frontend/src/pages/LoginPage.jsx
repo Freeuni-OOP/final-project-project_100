@@ -25,8 +25,8 @@ export default function LoginPage() {
 
         try {
             const resp = await api.post("/auth/login", form);
-            const { userId, username, token, isAdmin } = resp.data;
-            login(token, { id: userId, username, isAdmin });
+            const { userId, username, token } = resp.data;
+            login(token, { id: userId, username });
             navigate("/home");
         } catch (err) {
             const data = err.response?.data;
