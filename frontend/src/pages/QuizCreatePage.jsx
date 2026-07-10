@@ -101,7 +101,7 @@ export default function QuizCreatePage() {
 
     const handleSubmit = async () => {
         try {
-            await axiosInstance.post('/quiz/create', quizData);
+            await axiosInstance.post('/quizzes/create', quizData);
             navigate('/home');
         } catch (error) {
             console.error('Error saving quiz:', error);

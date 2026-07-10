@@ -1,105 +1,66 @@
 package com.freeuni.proj_100.quizwebsite.controller;
 
+import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
 import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Quiz;
 import com.freeuni.proj_100.quizwebsite.model.User;
 import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import com.freeuni.proj_100.quizwebsite.service.QuizService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
-/**
- * Controller for quiz-taking related HTTP requests.
- * Handles routing and passes data to Thymeleaf templates.
- */
-@Controller
-@RequestMapping("/api/quiz")
+@RestController
+@RequestMapping("/api/quizzes")
 public class QuizController {
 
     private final QuizService quizService;
     private final UserRepository userRepository;
 
-    /**
-     * Spring automatically injects QuizService here.
-     */
     public QuizController(QuizService quizService, UserRepository userRepository) {
         this.quizService = quizService;
         this.userRepository = userRepository;
     }
 
-    /**
-     * Shows the quiz summary page before taking the quiz.
-     * Accessible at: GET /quiz/{id}
-     */
-    @GetMapping("/{id}")
-    public String quizPage(@PathVariable Integer id, Model model) {
-        Optional<Quiz> quiz = quizService.getQuizById(id);
-        if (quiz.isEmpty()) {
-            return "redirect:/";
-        }
-        model.addAttribute("quiz", quiz.get());
-        return "quiz/view";
+    // GET /api/quizzes — list all quizzes
+    @GetMapping
+    public ResponseEntity<List<Quiz>> getAllQuizzes() {
+        return ResponseEntity.ok(quizService.getAllQuizzes());
     }
 
-    /**
-     * Shows the quiz-taking page.
-     * Accessible at: GET /quiz/{id}/take
-     */
-    @GetMapping("/{id}/take")
-    public String takeQuiz(@PathVariable Integer id, Model model) {
-        Optional<Quiz> quiz = quizService.getQuizById(id);
-        if (quiz.isEmpty()) {
-            return "redirect:/";
-        }
-        model.addAttribute("quiz", quiz.get());
-        return "quiz/take";
+    // GET /api/quizzes/{id}/start?practice=false — load quiz for taking
+    @GetMapping("/{id}/start")
+    public ResponseEntity<Quiz> startQuiz(
+            @PathVariable Integer id,
+            @RequestParam(defaultValue = "false") boolean practice
+    ) {
+        Quiz quiz = quizService.getQuizForTaking(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id: " + id));
+        return ResponseEntity.ok(quiz);
     }
 
-    /**
-     * Handles quiz submission.
-     * Accessible at: POST /quiz/{id}/submit
-     */
-    @PostMapping("/{id}/submit")
-    public String submitQuiz(@PathVariable Integer id,
-                             @RequestParam java.util.Map<String, String> answers,
-                             Model model) {
-        Optional<Quiz> quiz = quizService.getQuizById(id);
-        if (quiz.isEmpty()) {
-            return "redirect:/";
-        }
-        // scoring logic will go here
-        model.addAttribute("quiz", quiz.get());
-        model.addAttribute("answers", answers);
-        return "quiz/results";
-    }
-    /**
-     * Handles incoming React Axios requests to build and save a new quiz.
-     */
-    @PostMapping("/create")
-    @ResponseBody
+    // POST /api/quizzes/create — create a new quiz
+    @PostMapping("create")
     public ResponseEntity<String> createQuiz(
-            @RequestBody QuizCreationDTO quizCreationDTO,
+            @RequestBody QuizCreationDTO dto,
             @AuthenticationPrincipal String username
     ) {
-        if (quizCreationDTO.getTitle() == null || quizCreationDTO.getTitle().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Quiz title cannot be blank.");
+        if (dto.getTitle() == null || dto.getTitle().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Quiz title cannot be blank");
         }
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        try {
-            quizService.saveQuizFromDTO(quizCreationDTO, user.getId());
-            return ResponseEntity.ok("Quiz created successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error creating quiz: " + e.getMessage());
-        }
+        quizService.saveQuizFromDTO(dto, user.getId());
+        return ResponseEntity.status(201).body("Quiz created successfully");
+    }
+
+    // GET /api/quizzes/user/{userId} — get quizzes by creator
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Quiz>> getQuizzesByCreator(@PathVariable Integer userId) {
+        return ResponseEntity.ok(quizService.getQuizzesByCreator(userId));
     }
 }
