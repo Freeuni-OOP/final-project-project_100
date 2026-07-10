@@ -14,7 +14,7 @@ import java.util.List;
  * </p>
  */
 @Repository
-public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
+public interface AnnouncementRepository extends JpaRepository<Announcement, Integer> {
     /**
      * Retrieves all announcements from the database ordered chronologically.
      *

@@ -11,11 +11,11 @@ import java.util.Optional;
 
 /**
  * Repository interface for managing {@link User} entities.
- * Provides standard CRUD operations inherited from {@link JpaRepository} 
+ * Provides standard CRUD operations inherited from {@link JpaRepository}
  * alongside custom query methods for authentication and validation.
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     /**
      * Retrieves a user by their unique username.
      *
@@ -44,7 +44,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Retrieves the security token version associated with a specific username.
      *
      * @param username the username of the user whose token version is being verified
-     * @return an {@link Optional} containing the user's current token version if found; 
+     * @return an {@link Optional} containing the user's current token version if found;
      * otherwise an empty {@link Optional}
      */
     @Query("SELECT u.tokenVersion FROM User u WHERE u.username = :username")
