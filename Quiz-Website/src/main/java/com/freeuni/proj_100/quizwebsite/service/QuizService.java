@@ -21,12 +21,14 @@ import com.freeuni.proj_100.quizwebsite.model.AnswerEntity;
 public class QuizService {
 
     private final QuizRepository quizRepository;
+    private final QuestionRepository questionRepository;
 
     /**
      * Spring automatically injects QuizRepository here.
      */
-    public QuizService(QuizRepository quizRepository) {
+    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository) {
         this.quizRepository = quizRepository;
+        this.questionRepository = questionRepository;
     }
 
     /**
@@ -48,6 +50,23 @@ public class QuizService {
      */
     public List<Quiz> getQuizzesByCreator(Integer creatorId) {
         return quizRepository.findByCreatorId(creatorId);
+    }
+
+    /**
+     * Gets the specified quiz questions and answers.
+     */
+    @Transactional(readOnly = true)
+    public Optional<Quiz> getQuizForTaking(Integer id) {
+        Optional<Quiz> quizOpt = quizRepository.findByIdWithQuestions(id);
+        if (quizOpt.isEmpty()) return quizOpt;
+
+        Quiz quiz = quizOpt.get();
+
+        List<QuestionEntity> questionsWithAnswers =
+                questionRepository.findQuestionsWithAnswers(quiz.getId());
+        quiz.setQuestions(questionsWithAnswers);
+
+        return Optional.of(quiz);
     }
 
     /**
