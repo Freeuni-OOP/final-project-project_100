@@ -1,4 +1,5 @@
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import useQuiz from '../hooks/useQuiz.js';
 import QuestionRenderer from '../components/QuestionRenderer.jsx';
 import styles from '../styles/quizTakePage.module.css';
@@ -17,16 +18,17 @@ export default function QuizTakePage() {
     } = useQuiz(quizId, isPractice);
 
 
+    useEffect(() => {
+        if (result) {
+            navigate(`/quizzes/${quizId}/results`, { state: { result, isPractice } });
+        }
+    }, [result, navigate, quizId, isPractice]);
+
     if (loading) return <div className={styles.center}>Loading quiz...</div>;
     if (error) return <div className={styles.centerError}>{error}</div>;
     if (!quiz) return null;
 
     if (!quiz.singlePage && !currentQuestion) return null
-
-    if (result) {
-        navigate(`/quizzes/${quizId}/results`, { state: { result, isPractice } });
-        return null;
-    }
 
     if (quiz.singlePage) {
         return (

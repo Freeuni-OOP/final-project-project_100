@@ -2,7 +2,7 @@ import styles from '../styles/questionRenderer.module.css';
 
 export default function QuestionRenderer({ question, value, onChange, disabled }) {
   switch (question.qType) {
-    case 'standard':
+    case 'STANDARD':
     case 'fill-in-the-blank':
       return (
         <input
@@ -25,9 +25,9 @@ export default function QuestionRenderer({ question, value, onChange, disabled }
                     <input
                         type="radio"
                         name={`question-${question.id}`}
-                        value={opt.id}
-                        checked={value === opt.id}
-                        onChange={() => onChange(opt.id)}
+                        value={opt.answerText}
+                        checked={value === opt.answerText}
+                        onChange={() => onChange(opt.answerText)}
                         disabled={disabled}
                     />
                     <span>{opt.answerText}</span>
