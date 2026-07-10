@@ -1,14 +1,14 @@
 .root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: #f9fafb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f9fafb;
 }
 
 .main {
-  flex: 1;
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+    flex: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
 }
