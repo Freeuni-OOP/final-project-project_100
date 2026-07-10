@@ -22,6 +22,7 @@ export default function QuizCreatePage() {
         questions: []
     });
 
+    const [editingId, setEditingId] = useState(null);
 
     const [currentQuestion, setCurrentQuestion] = useState({
         type: 'multiple-choice',
@@ -61,6 +62,17 @@ export default function QuizCreatePage() {
         setCurrentQuestion(prev => ({ ...prev, options: updatedOptions }));
     };
 
+    const startEditingQuestion = (question) => {
+        setEditingId(question.id);
+        setCurrentQuestion({
+            type: question.type,
+            questionText: question.questionText,
+            options: question.options && question.options.length > 0 ? [...question.options] : ['', '', '', ''],
+            correctAnswer: question.correctAnswer,
+            imageUrl: question.imageUrl || ''
+        });
+    };
+
     const addQuestionToQuiz = () => {
         if (!currentQuestion.questionText.trim()) {
             alert("Question text or prompt cannot be empty.");
@@ -75,12 +87,23 @@ export default function QuizCreatePage() {
             return;
         }
 
-        setQuizData(prev => ({
-            ...prev,
-            questions: [...prev.questions, { ...currentQuestion, id: Date.now() }]
-        }));
+        setQuizData(prev => {
+            let updatedQuestions;
+            if(editingId !== null){
+                //Map over existing questions to update the one matching editingId.
+                updatedQuestions = prev.questions.map(q =>
+                    q.id === editingId ? {...currentQuestion, id: editingId} : q
+                );
+            }
+            else{
+                //Add new question.
+                updatedQuestions = [...prev.questions, {...currentQuestion, id: Date.now()}];
+            }
+            return {...prev, questions: updatedQuestions};
+        });
 
-        // Reset state back to defaults
+        // Reset state back to defaults and clear editing lock.
+        setEditingId(null);
         setCurrentQuestion({
             type: 'multiple-choice',
             questionText: '',
@@ -91,6 +114,16 @@ export default function QuizCreatePage() {
     };
 
     const removeQuestion = (id) => {
+        if(editingId === id){
+            setEditingId(null);
+            setCurrentQuestion({
+                type: 'multiple-choice',
+                questionText: '',
+                options: ['', '', '', ''],
+                correctAnswer: '',
+                imageUrl: ''
+            });
+        }
         setQuizData(prev => ({
             ...prev,
             questions: prev.questions.filter(q => q.id !== id)
@@ -203,9 +236,12 @@ export default function QuizCreatePage() {
                             <div style={{ marginBottom: '1.5rem', borderBottom: '1px dashed #ccc', paddingBottom: '1rem' }}>
                                 <h4>Added Questions ({quizData.questions.length})</h4>
                                 {quizData.questions.map((q, index) => (
-                                    <div key={q.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontSize: '0.9rem' }}>
-                                        <span>{index + 1}. <strong>[{q.type.toUpperCase()}]</strong> {q.questionText}</span>
-                                        <button onClick={() => removeQuestion(q.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Delete</button>
+                                    <div key={q.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontSize: '0.9rem', alignItems: 'center', borderBottom: '1px solid #f0f0f0' }}>
+                                        <span style={{maxWidth: '75%'}}>{index + 1}. <strong>[{q.type.toUpperCase()}]</strong> {q.questionText}</span>
+                                        <div style={{display: 'flex', gap: '10px' }}>
+                                            <button onClick={() => startEditingQuestion(q)} style={{ color: 'blue', background: 'none', border: 'none', cursor: 'pointer'}}>Edit</button>
+                                            <button onClick={() => removeQuestion(q.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer'}}>Delete</button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -286,9 +322,9 @@ export default function QuizCreatePage() {
                         <button
                             type="button"
                             onClick={addQuestionToQuiz}
-                            style={{ padding: '0.6rem 1rem', background: '#34a853', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                            style={{ padding: '0.6rem 1rem', background: editingId !== null ? '#1a73e8' : '#34a853', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
                         >
-                            + Save Question to List
+                            {editingId !== null ? 'Update Question in List' : '+ Save Question to List'}
                         </button>
                     </div>
                 )}
