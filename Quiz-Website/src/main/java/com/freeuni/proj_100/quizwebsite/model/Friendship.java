@@ -14,11 +14,11 @@ public class Friendship {
 
     @Id
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Integer userId;
 
     @Id
     @Column(name = "friend_id", nullable = false)
-    private Long friendId;
+    private Integer friendId;
 
     @Column(name = "status", nullable = false)
     private FriendshipStatus status;
@@ -27,7 +27,7 @@ public class Friendship {
     @Column(name = "established_at", insertable = false, updatable = false)
     private LocalDateTime establishedAt;
 
-    public Friendship(Long userId, Long friendId, FriendshipStatus status) {
+    public Friendship(Integer userId, Integer friendId, FriendshipStatus status) {
         this.userId = userId;
         this.friendId = friendId;
         this.status = status;
@@ -35,8 +35,8 @@ public class Friendship {
 
     public Friendship() {}
 
-    public Long getUserId() { return userId; }
-    public Long getFriendId() { return friendId; }
+    public Integer getUserId() { return userId; }
+    public Integer getFriendId() { return friendId; }
     public FriendshipStatus getStatus() { return status; }
     public LocalDateTime getEstablishedAt() { return establishedAt; }
 

@@ -23,7 +23,7 @@ public class User implements UserDetails {
      */
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     /**
      * The unique username used for authentication. Maximum length of 50 characters.
@@ -44,7 +44,7 @@ public class User implements UserDetails {
     private String passwordHash;
 
     /**
-     * The timestamp indicating when the user record was created. 
+     * The timestamp indicating when the user record was created.
      * This value cannot be updated after creation.
      */
     @Column(nullable=false, updatable=false)
@@ -72,7 +72,7 @@ public class User implements UserDetails {
      * @param createdAt    The creation timestamp
      * @param isAdmin      The administrative status flag
      */
-    public User(Long id, String username, String email, String passwordHash,
+    public User(Integer id, String username, String email, String passwordHash,
                 LocalDateTime createdAt, boolean isAdmin) {
         this.id = id;
         this.username = username;
@@ -92,7 +92,7 @@ public class User implements UserDetails {
     }
 
     /**
-     * JPA lifecycle callback method that automatically sets the {@code createdAt} 
+     * JPA lifecycle callback method that automatically sets the {@code createdAt}
      * timestamp to the current date and time before the entity is persisted.
      */
     @PrePersist
@@ -100,13 +100,13 @@ public class User implements UserDetails {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
+    public Integer getId() { return id; }
     public String getEmail() { return email; }
     public boolean isAdmin() { return isAdmin; }    // JPA expects 'isAdmin' and not 'getIsAdmin'
     public int getTokenVersion() { return tokenVersion; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Integer id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setEmail(String email) { this.email = email; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }

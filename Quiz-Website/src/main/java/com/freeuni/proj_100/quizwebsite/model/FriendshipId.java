@@ -9,10 +9,10 @@ import java.util.Objects;
  */
 public class FriendshipId implements Serializable {
 
-    private Long userId;
-    private Long friendId;
+    private Integer userId;
+    private Integer friendId;
 
-    public FriendshipId(Long userId, Long friendId) {
+    public FriendshipId(Integer userId, Integer friendId) {
         this.userId = userId;
         this.friendId = friendId;
     }
