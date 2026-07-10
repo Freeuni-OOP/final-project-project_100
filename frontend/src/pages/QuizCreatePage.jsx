@@ -73,6 +73,24 @@ export default function QuizCreatePage() {
         });
     };
 
+    const moveQuestionUp = (index) => {
+        if(index === 0) return;
+        setQuizData(prev => {
+            const updated = [...prev.questions];
+            [updated[index], updated[index - 1]] = [updated[index - 1], updated[index]];
+            return {...prev, questions: updated}
+        })
+    }
+
+    const moveQuestionDown = (index) => {
+        setQuizData(prev => {
+            if(index === prev.questions.length - 1) return prev;
+            const updated = [...prev.questions];
+            [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
+            return {...prev, questions: updated}
+        })
+    }
+
     const addQuestionToQuiz = () => {
         if (!currentQuestion.questionText.trim()) {
             alert("Question text or prompt cannot be empty.");
@@ -237,10 +255,18 @@ export default function QuizCreatePage() {
                                 <h4>Added Questions ({quizData.questions.length})</h4>
                                 {quizData.questions.map((q, index) => (
                                     <div key={q.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontSize: '0.9rem', alignItems: 'center', borderBottom: '1px solid #f0f0f0' }}>
-                                        <span style={{maxWidth: '75%'}}>{index + 1}. <strong>[{q.type.toUpperCase()}]</strong> {q.questionText}</span>
-                                        <div style={{display: 'flex', gap: '10px' }}>
-                                            <button onClick={() => startEditingQuestion(q)} style={{ color: 'blue', background: 'none', border: 'none', cursor: 'pointer'}}>Edit</button>
-                                            <button onClick={() => removeQuestion(q.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer'}}>Delete</button>
+                                        <span style={{maxWidth: '60%'}}>{index + 1}. <strong>[{q.type.toUpperCase()}]</strong> {q.questionText}</span>
+                                        <div style={{display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                            <button onClick={() => startEditingQuestion(q)}
+                                                    style={{ color: 'blue', background: 'none', border: 'none', cursor: 'pointer'}}>Edit</button>
+                                            <button onClick={() => removeQuestion(q.id)}
+                                                    style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer'}}>Delete</button>
+                                            <button disabled={index === 0} onClick={() => moveQuestionUp(index)}
+                                                    style={{ background: 'none', border: 'none', cursor: index === 0 ? 'not-allowed' : 'pointer', opacity: index === 0 ? 0.3 : 1}}
+                                                    title="Move Up">↑</button>
+                                            <button disabled={index === quizData.questions.length - 1} onClick={() => moveQuestionDown(index)}
+                                                    style={{ background: 'none', border: 'none', cursor: index === quizData.questions.length - 1 ? 'not-allowed' : 'pointer', opacity: index === quizData.questions.length - 1 ? 0.3 : 1}}
+                                                    title="Move down">↓</button>
                                         </div>
                                     </div>
                                 ))}
