@@ -9,7 +9,7 @@ public record AttemptResultDto(
         List<QuestionResultDto> results
 ) {
     public record QuestionResultDto(
-            Long questionId,
+            Integer questionId,
             boolean correct,
             String correctAnswer,
             String userAnswer
