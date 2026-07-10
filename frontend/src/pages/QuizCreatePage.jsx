@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styles from '../styles/quizCreate.module.css';
 import axiosInstance from '../api/axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const STEPS = {
     0: 'Basic Info & Options',
@@ -10,17 +12,25 @@ const STEPS = {
 
 export default function QuizCreatePage() {
     const [currentStep, setCurrentStep] = useState(0);
-
     const [quizData, setQuizData] = useState({
         title: '',
         description: '',
         randomizeQuestions: false,
         singlePageLayout: true,
         immediateFeedback: false,
+        allowPractice: false,
         questions: []
     });
 
-    // Dual-purpose handler for text inputs and checkboxes
+
+    const [currentQuestion, setCurrentQuestion] = useState({
+        type: 'multiple-choice',
+        questionText: '',
+        options: ['', '', '', ''],
+        correctAnswer: '',
+        imageUrl: ''
+    });
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setQuizData(prev => ({
@@ -34,16 +44,65 @@ export default function QuizCreatePage() {
             alert("Please enter a quiz title.");
             return;
         }
+        if (currentStep === 1 && quizData.questions.length === 0) {
+            alert("Please add at least one question before proceeding.");
+            return;
+        }
         setCurrentStep(prev => prev + 1);
     };
 
     const handleBack = () => {
         setCurrentStep(prev => prev - 1);
     };
+
+    const handleOptionChange = (index, value) => {
+        const updatedOptions = [...currentQuestion.options];
+        updatedOptions[index] = value;
+        setCurrentQuestion(prev => ({ ...prev, options: updatedOptions }));
+    };
+
+    const addQuestionToQuiz = () => {
+        if (!currentQuestion.questionText.trim()) {
+            alert("Question text or prompt cannot be empty.");
+            return;
+        }
+        if (currentQuestion.type === 'picture-response' && !currentQuestion.imageUrl.trim()) {
+            alert("Picture-Response questions require an absolute Image URL.");
+            return;
+        }
+        if (!currentQuestion.correctAnswer.trim()) {
+            alert("Please specify the correct answer target.");
+            return;
+        }
+
+        setQuizData(prev => ({
+            ...prev,
+            questions: [...prev.questions, { ...currentQuestion, id: Date.now() }]
+        }));
+
+        // Reset state back to defaults
+        setCurrentQuestion({
+            type: 'multiple-choice',
+            questionText: '',
+            options: ['', '', '', ''],
+            correctAnswer: '',
+            imageUrl: ''
+        });
+    };
+
+    const removeQuestion = (id) => {
+        setQuizData(prev => ({
+            ...prev,
+            questions: prev.questions.filter(q => q.id !== id)
+        }));
+    };
+
+    const navigate = useNavigate();
+
     const handleSubmit = async () => {
         try {
             await axiosInstance.post('/quiz/create', quizData);
-            alert('Quiz created successfully!');
+            navigate('/home');
         } catch (error) {
             console.error('Error saving quiz:', error);
             alert('Failed to save quiz.');
@@ -52,7 +111,6 @@ export default function QuizCreatePage() {
 
     return (
         <div className={styles.container}>
-            {/* Progress tracking header */}
             <div className={styles.progressContainer}>
                 {Object.keys(STEPS).map((idx) => (
                     <div
@@ -65,7 +123,7 @@ export default function QuizCreatePage() {
             </div>
 
             <div className={styles.formWindow}>
-                {/* Base Configurations */}
+                {/* Configurations */}
                 {currentStep === 0 && (
                     <div className={styles.stepForm}>
                         <div className={styles.fieldGroup}>
@@ -76,7 +134,7 @@ export default function QuizCreatePage() {
                                 type="text"
                                 value={quizData.title}
                                 onChange={handleInputChange}
-                                placeholder="e.g., CS108 Midterm Review"
+                                placeholder="e.g., Programming Abstractions Quiz"
                             />
                         </div>
 
@@ -87,13 +145,12 @@ export default function QuizCreatePage() {
                                 name="description"
                                 value={quizData.description}
                                 onChange={handleInputChange}
-                                placeholder="Provide details about the quiz scope..."
+                                placeholder="Provide an overall description of the purpose of the quiz..."
                             />
                         </div>
 
                         <div className={styles.optionsGroup}>
-                            <h3>Quiz Behaviors</h3>
-
+                            <h3>Quiz Properties & Options</h3>
                             <label className={styles.checkboxLabel}>
                                 <input
                                     type="checkbox"
@@ -101,7 +158,7 @@ export default function QuizCreatePage() {
                                     checked={quizData.randomizeQuestions}
                                     onChange={handleInputChange}
                                 />
-                                Randomize question presentation order
+                                Randomize presentation order of questions
                             </label>
 
                             <label className={styles.checkboxLabel}>
@@ -111,7 +168,7 @@ export default function QuizCreatePage() {
                                     checked={quizData.singlePageLayout}
                                     onChange={handleInputChange}
                                 />
-                                Display all questions on a single page layout
+                                Display all questions on a single webpage layout
                             </label>
 
                             <label className={styles.checkboxLabel}>
@@ -121,34 +178,134 @@ export default function QuizCreatePage() {
                                     checked={quizData.immediateFeedback}
                                     onChange={handleInputChange}
                                 />
-                                Provide immediate correction feedback to students
+                                Immediate Correction (Provide feedback immediately item-by-item)
+                            </label>
+
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    name="allowPractice"
+                                    checked={quizData.allowPractice}
+                                    onChange={handleInputChange}
+                                />
+                                Allow practice mode on quiz
                             </label>
                         </div>
                     </div>
                 )}
 
-                {/* Question Slot  */}
+                {/*Question builder that has all 4 required types */}
                 {currentStep === 1 && (
-                    <div className={styles.questionPlaceholder}>
-                        <h3>Questions Configuration Panel</h3>
-                        <p>Question creation forms managed via secondary module branch.</p>
+                    <div className={styles.stepForm}>
+                        <h3>Build Your Questions</h3>
+
+                        {quizData.questions.length > 0 && (
+                            <div style={{ marginBottom: '1.5rem', borderBottom: '1px dashed #ccc', paddingBottom: '1rem' }}>
+                                <h4>Added Questions ({quizData.questions.length})</h4>
+                                {quizData.questions.map((q, index) => (
+                                    <div key={q.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                                        <span>{index + 1}. <strong>[{q.type.toUpperCase()}]</strong> {q.questionText}</span>
+                                        <button onClick={() => removeQuestion(q.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Delete</button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className={styles.fieldGroup}>
+                            <label>Required Question Type</label>
+                            <select
+                                value={currentQuestion.type}
+                                onChange={(e) => setCurrentQuestion(prev => ({
+                                    ...prev,
+                                    type: e.target.value,
+                                    options: e.target.value === 'multiple-choice' ? ['', '', '', ''] : [],
+                                    correctAnswer: '',
+                                    imageUrl: ''
+                                }))}
+                            >
+                                <option value="multiple-choice">Multiple Choice (Radio Buttons)</option>
+                                <option value="question-response">Question-Response (Standard Text)</option>
+                                <option value="fill-in-the-blank">Fill in the Blank</option>
+                                <option value="picture-response">Picture-Response Questions</option>
+                            </select>
+                        </div>
+
+                        {/* Renders an image URL text input explicitly for Picture-Response types */}
+                        {currentQuestion.type === 'picture-response' && (
+                            <div className={styles.fieldGroup}>
+                                <label>Absolute External Image URL</label>
+                                <input
+                                    type="text"
+                                    value={currentQuestion.imageUrl}
+                                    onChange={(e) => setCurrentQuestion(prev => ({ ...prev, imageUrl: e.target.value }))}
+                                    placeholder="e.g., http://events.stanford.edu/.../Memchu_small.jpg"
+                                />
+                            </div>
+                        )}
+
+                        <div className={styles.fieldGroup}>
+                            <label>
+                                {currentQuestion.type === 'fill-in-the-blank'
+                                    ? "Question Text (Use underscores for the blank, e.g., 'Lincoln gave the __________ Address')"
+                                    : "Question Prompt / Text"}
+                            </label>
+                            <input
+                                type="text"
+                                value={currentQuestion.questionText}
+                                onChange={(e) => setCurrentQuestion(prev => ({ ...prev, questionText: e.target.value }))}
+                                placeholder="Enter the prompt content..."
+                            />
+                        </div>
+
+                        {currentQuestion.type === 'multiple-choice' && (
+                            <div className={styles.fieldGroup}>
+                                <label>Choices</label>
+                                {currentQuestion.options.map((opt, i) => (
+                                    <input
+                                        key={i}
+                                        type="text"
+                                        value={opt}
+                                        onChange={(e) => handleOptionChange(i, e.target.value)}
+                                        placeholder={`Option ${i + 1}`}
+                                        style={{ marginBottom: '0.5rem' }}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        <div className={styles.fieldGroup}>
+                            <label>Correct Answer Target</label>
+                            <input
+                                type="text"
+                                value={currentQuestion.correctAnswer}
+                                onChange={(e) => setCurrentQuestion(prev => ({ ...prev, correctAnswer: e.target.value }))}
+                                placeholder="Expected text or exact multiple choice match option string"
+                            />
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={addQuestionToQuiz}
+                            style={{ padding: '0.6rem 1rem', background: '#34a853', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                        >
+                            + Save Question to List
+                        </button>
                     </div>
                 )}
 
-                {/* Global Review Summary */}
+                {/* global review summary */}
                 {currentStep === 2 && (
                     <div className={styles.reviewForm}>
-                        <h3>Confirm Settings</h3>
+                        <h3>Confirm Settings & Publish Quiz</h3>
                         <p><strong>Title:</strong> {quizData.title || 'Untitled Quiz'}</p>
-                        <p><strong>Total Questions:</strong> {quizData.questions.length}</p>
+                        <p><strong>Total Structured Questions:</strong> {quizData.questions.length}</p>
                         <p><strong>Randomization:</strong> {quizData.randomizeQuestions ? 'Enabled' : 'Disabled'}</p>
-                        <p><strong>Layout:</strong> {quizData.singlePageLayout ? 'Single Page' : 'Multi-Page Wizard'}</p>
-                        <p><strong>Feedback Mode:</strong> {quizData.immediateFeedback ? 'Immediate Correct' : 'On Submit'}</p>
+                        <p><strong>Layout Format:</strong> {quizData.singlePageLayout ? 'Single Page' : 'One Question Per Page (Flashcard style)'}</p>
+                        <p><strong>Feedback Correction:</strong> {quizData.immediateFeedback ? 'Immediate Correction Enabled' : 'Graded on full submission'}</p>
                     </div>
                 )}
             </div>
 
-            {/* Control Layer */}
             <div className={styles.navRow}>
                 <button
                     disabled={currentStep === 0}
