@@ -1,5 +1,6 @@
 package com.freeuni.proj_100.quizwebsite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class QuestionEntity {
      */
     @ManyToOne
     @JoinColumn(name = "quiz_id")
+    @JsonIgnore
     private Quiz quiz;
 
     /**
