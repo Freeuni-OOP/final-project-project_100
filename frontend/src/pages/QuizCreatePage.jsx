@@ -330,6 +330,9 @@ export default function QuizCreatePage() {
                                 onChange={(e) => setCurrentQuestion(prev => ({ ...prev, questionText: e.target.value }))}
                                 placeholder="Enter the prompt content..."
                             />
+                            <div style={{ textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem',
+                                color: currentQuestion.questionText.length > 150 ? 'red' : 'green'
+                            }}>{currentQuestion.questionText.length} / 150 characters</div>
                         </div>
 
                         {currentQuestion.type === 'multiple-choice' && (
@@ -361,7 +364,10 @@ export default function QuizCreatePage() {
                         <button
                             type="button"
                             onClick={addQuestionToQuiz}
-                            style={{ padding: '0.6rem 1rem', background: editingId !== null ? '#1a73e8' : '#34a853', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                            disabled={currentQuestion.questionText.length > 150}
+                            style={{ padding: '0.6rem 1rem',
+                                background: currentQuestion.questionText.length > 150 ? 'gray' : editingId !== null ? '#1a73e8' : '#34a853',
+                                color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
                         >
                             {editingId !== null ? 'Update Question in List' : '+ Save Question to List'}
                         </button>
