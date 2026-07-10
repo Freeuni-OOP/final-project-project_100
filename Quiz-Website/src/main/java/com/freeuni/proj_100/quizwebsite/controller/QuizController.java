@@ -1,7 +1,11 @@
 package com.freeuni.proj_100.quizwebsite.controller;
 
+import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Quiz;
+import com.freeuni.proj_100.quizwebsite.model.User;
+import com.freeuni.proj_100.quizwebsite.repository.UserRepository;
 import com.freeuni.proj_100.quizwebsite.service.QuizService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +24,14 @@ import java.util.Optional;
 public class QuizController {
 
     private final QuizService quizService;
+    private final UserRepository userRepository;
 
     /**
      * Spring automatically injects QuizService here.
      */
-    public QuizController(QuizService quizService) {
+    public QuizController(QuizService quizService, UserRepository userRepository) {
         this.quizService = quizService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -78,13 +84,19 @@ public class QuizController {
      */
     @PostMapping("/create")
     @ResponseBody
-    public ResponseEntity<String> createQuiz(@RequestBody QuizCreationDTO quizCreationDTO) {
+    public ResponseEntity<String> createQuiz(
+            @RequestBody QuizCreationDTO quizCreationDTO,
+            @AuthenticationPrincipal String username
+    ) {
         if (quizCreationDTO.getTitle() == null || quizCreationDTO.getTitle().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Quiz title cannot be blank.");
         }
 
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         try {
-            quizService.saveQuizFromDTO(quizCreationDTO);
+            quizService.saveQuizFromDTO(quizCreationDTO, user.getId());
             return ResponseEntity.ok("Quiz created successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error creating quiz: " + e.getMessage());

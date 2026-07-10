@@ -10,13 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
 import com.freeuni.proj_100.quizwebsite.dto.QuestionCreationDTO;
-import com.freeuni.proj_100.quizwebsite.model.QuestionEntity;
-import com.freeuni.proj_100.quizwebsite.repository.QuestionRepository;
 import org.springframework.transaction.annotation.Transactional;
 import com.freeuni.proj_100.quizwebsite.model.AnswerEntity;
-import com.freeuni.proj_100.quizwebsite.model.MultipleChoiceQuestion;
-import com.freeuni.proj_100.quizwebsite.model.PictureResponseQuestion;
-import com.freeuni.proj_100.quizwebsite.model.FillInTheBlankQuestion;
 
 /**
  * Service layer for quiz-related business logic.
@@ -26,16 +21,12 @@ import com.freeuni.proj_100.quizwebsite.model.FillInTheBlankQuestion;
 public class QuizService {
 
     private final QuizRepository quizRepository;
-    private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
 
     /**
      * Spring automatically injects QuizRepository here.
      */
-    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, AnswerRepository answerRepository) {
+    public QuizService(QuizRepository quizRepository) {
         this.quizRepository = quizRepository;
-        this.questionRepository = questionRepository;
-        this.answerRepository = answerRepository;
     }
 
     /**
@@ -64,7 +55,7 @@ public class QuizService {
      * and maps/saves its constituent questions and answers.
      */
     @Transactional
-    public void saveQuizFromDTO(QuizCreationDTO dto) {
+    public void saveQuizFromDTO(QuizCreationDTO dto, Integer creatorId) {
         //Create the Quiz entity
         Quiz quiz = new Quiz();
         quiz.setTitle(dto.getTitle());
@@ -72,7 +63,9 @@ public class QuizService {
         quiz.setRandomized(dto.isRandomizeQuestions());
         quiz.setSinglePage(dto.isSinglePageLayout());
         quiz.setImmediateFeedback(dto.isImmediateFeedback());
+        quiz.setAllowPractice(dto.isAllowPractice());
         quiz.setCreatedAt(java.time.LocalDateTime.now());
+        quiz.setCreatorId(creatorId);
 
         int sequence = 1;
         for (QuestionCreationDTO qDto : dto.getQuestions()) {

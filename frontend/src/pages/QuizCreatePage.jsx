@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styles from '../styles/quizCreate.module.css';
 import axiosInstance from '../api/axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const STEPS = {
     0: 'Basic Info & Options',
@@ -16,6 +18,7 @@ export default function QuizCreatePage() {
         randomizeQuestions: false,
         singlePageLayout: true,
         immediateFeedback: false,
+        allowPractice: false,
         questions: []
     });
 
@@ -94,10 +97,12 @@ export default function QuizCreatePage() {
         }));
     };
 
+    const navigate = useNavigate();
+
     const handleSubmit = async () => {
         try {
             await axiosInstance.post('/quiz/create', quizData);
-            alert('Quiz created successfully!');
+            navigate('/home');
         } catch (error) {
             console.error('Error saving quiz:', error);
             alert('Failed to save quiz.');
@@ -174,6 +179,16 @@ export default function QuizCreatePage() {
                                     onChange={handleInputChange}
                                 />
                                 Immediate Correction (Provide feedback immediately item-by-item)
+                            </label>
+
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    name="allowPractice"
+                                    checked={quizData.allowPractice}
+                                    onChange={handleInputChange}
+                                />
+                                Allow practice mode on quiz
                             </label>
                         </div>
                     </div>
