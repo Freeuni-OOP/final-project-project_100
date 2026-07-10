@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,8 +30,7 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Intege
     /**
      * Retrieves the history of non-practice quiz attempts for a specific user, ordered by most recent.
      */
-    @Query("SELECT a FROM QuizAttempt a WHERE a.quizId = :quizId AND a.isPractice = false AND a.takenAt >= :yesterday ORDER BY a.score DESC, a.timeTakenSec ASC")
-    List<QuizAttempt> getTopPerformersLastDay(Integer quizId, LocalDateTime yesterday, Pageable pageable);
+    List<QuizAttempt> findByQuizIdAndIsPracticeFalseOrderByScoreDescTimeTakenSecDesc(Integer quizId, Pageable pageable);
 
     /**
      * Retrieves the leaderboard for a specific quiz based on score (descending) and time taken (ascending).
