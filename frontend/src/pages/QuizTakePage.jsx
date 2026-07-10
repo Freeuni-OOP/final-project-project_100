@@ -21,12 +21,14 @@ export default function QuizTakePage() {
     if (error) return <div className={styles.centerError}>{error}</div>;
     if (!quiz) return null;
 
+    if (!quiz.singlePage && !currentQuestion) return null
+
     if (result) {
         navigate(`/quizzes/${quizId}/results`, { state: { result, isPractice } });
         return null;
     }
 
-    if (quiz.isSinglePage) {
+    if (quiz.singlePage) {
         return (
             <div className={styles.page}>
                 <h1 className={styles.title}>{quiz.title}</h1>

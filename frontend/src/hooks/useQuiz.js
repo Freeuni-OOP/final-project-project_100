@@ -5,7 +5,7 @@ export default function useQuiz(quizId, isPractice = false) {
     const [quiz, setQuiz] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
-    const [currIdx, setCurrIdx] = useState(0)
+    const [currentIdx, setCurrentIdx] = useState(0)
     const [answers, setAnswers] = useState({})
     const [feedback, setFeedback] = useState(null)
     const [result, setResult] = useState(null)
@@ -19,6 +19,8 @@ export default function useQuiz(quizId, isPractice = false) {
                 const res = await api.get(`/quizzes/${quizId}/start`, {
                     params: { practice: isPractice }
                 });
+                console.log('Quiz response:', res.data)  // ← add this
+
                 setQuiz(res.data);
                 startTime.current = Date.now();
             } catch (err) {
@@ -34,8 +36,8 @@ export default function useQuiz(quizId, isPractice = false) {
         setAnswers(prev => ({ ...prev, [questionId]: resp }));
     }
 
-    const currQuestion = quiz?.questions?.[currIdx];
-    const isLastQuestion = quiz && currIdx === quiz.questions.length - 1;
+    const currQuestion = quiz?.questions?.[currentIdx];
+    const isLastQuestion = quiz && currentIdx === quiz.questions.length - 1;
 
     const checkCurrAnswer = async () => {
         if (!quiz.immediateFeedback || !currQuestion) return;
@@ -54,12 +56,12 @@ export default function useQuiz(quizId, isPractice = false) {
 
     const goNext = () => {
         setFeedBack(null);
-        setCurrIdx(i => Math.min(i+1, quiz.questions.length - 1));
+        setCurrentIdx(i => Math.min(i+1, quiz.questions.length - 1));
     }
 
     const goBack = () => {
         setFeedBack(null);
-        setCurrIdx(i => Math.max(i-1, 0));
+        setCurrentIdx(i => Math.max(i-1, 0));
     }
 
     const submitQuiz = useCallback(async () => {
@@ -87,7 +89,7 @@ export default function useQuiz(quizId, isPractice = false) {
     }, [quizId, answers, isPractice]);
 
     return {
-        quiz, loading, error, currentQuestion, currentIndex,
+        quiz, loading, error, currQuestion, currentIdx,
         isLastQuestion, answers, setAnswer, feedback,
         checkCurrAnswer, goNext, goBack,
         result, submitQuiz, submitting
