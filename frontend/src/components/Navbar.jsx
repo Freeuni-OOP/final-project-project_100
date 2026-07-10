@@ -18,7 +18,6 @@ export default function Navbar() {
         { to: '/quizzes', label: 'Quizzes' },
         { to: '/friends', label: 'Friends' }, // So you don't have to type the URL manually!
         { to: `/profile/${user?.username}`, label: 'My Profile' },
-        { to: '/quizzes/1/summary', label: 'Quiz 1 Summary' } // Hardcoded as it was in your version
     ];
 
     return (
