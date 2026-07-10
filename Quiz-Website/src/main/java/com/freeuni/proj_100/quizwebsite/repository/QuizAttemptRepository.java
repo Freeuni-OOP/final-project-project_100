@@ -3,6 +3,7 @@ package com.freeuni.proj_100.quizwebsite.repository;
 import com.freeuni.proj_100.quizwebsite.model.QuizAttempt;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
