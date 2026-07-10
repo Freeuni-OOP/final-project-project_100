@@ -1,5 +1,6 @@
 package com.freeuni.proj_100.quizwebsite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 /**
@@ -22,6 +23,7 @@ public class AnswerEntity {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
+    @JsonIgnore
     private QuestionEntity question;
 
     /**
