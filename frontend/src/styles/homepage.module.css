@@ -1,0 +1,157 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.loading {
+  text-align: center;
+  color: #9ca3af;
+  padding: 4rem;
+  font-size: 14px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+}
+
+.createBtn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.createBtn:hover { background: #2563eb; }
+
+.announcementList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.announcement {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.announcementTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.announcementMeta {
+  font-size: 11px;
+  color: #b45309;
+}
+
+.announcementContent {
+  font-size: 13px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.placeholder {
+  font-size: 13px;
+  color: #9ca3af;
+  padding: 2rem;
+  text-align: center;
+  background: #fff;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+}
+
+.quizGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.quizCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.quizCard:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.1);
+}
+
+.quizCardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+
+.quizCardMeta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.quizCardDesc {
+  font-size: 12px;
+  color: #4b5563;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.quizCardDate {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: auto;
+}
+.quizCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.summaryBtn {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+}
+
+.summaryBtn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
