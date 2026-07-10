@@ -22,7 +22,7 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final QuizAttemptRepository attemptRepository;
     private final UserAchievementRepository achievementRepository;
-    private final FriendshipRepository friendshipRepository; // Added
+    private final FriendshipRepository friendshipRepository;
 
     public ProfileService(UserRepository userRepository, QuizAttemptRepository attemptRepository, UserAchievementRepository achievementRepository, FriendshipRepository friendshipRepository) {
         this.userRepository = userRepository;
@@ -34,20 +34,17 @@ public class ProfileService {
     public Optional<ProfileResponseDTO> getProfileData(String targetUsername, Authentication auth) {
         return userRepository.findByUsername(targetUsername).map(user -> {
 
-            // Pass the whole user object to get the ID for DB checks
             String relation = determineRelation(user, auth);
             List<QuizAttemptDTO> attempts = fetchRecentAttempts(user.getId());
             List<String> achievements = fetchAchievements(user.getId());
 
             return new ProfileResponseDTO(
-                    user.getId(), // MUST PASS THE ID HERE
+                    user.getId(),
                     user.getUsername(), user.getEmail(), user.isAdmin(),
                     user.getCreatedAt(), relation, attempts, achievements
             );
         });
     }
-
-    // PRIVATE HELPER METHODS
 
     private String determineRelation(User targetUser, Authentication auth) {
         if (auth == null || !auth.isAuthenticated() || auth.getName() == null) {
@@ -59,14 +56,12 @@ public class ProfileService {
             return "SELF";
         }
 
-        // Fetch current user's ID to check the friendship table
         Optional<User> currentUserOpt = userRepository.findByUsername(currentUsername);
         if (currentUserOpt.isEmpty()) {
             return "NONE";
         }
         User currentUser = currentUserOpt.get();
 
-        // Check if a relationship exists
         Optional<Friendship> friendshipOpt = friendshipRepository.findFriendshipBetween(currentUser.getId(), targetUser.getId());
 
         if (friendshipOpt.isEmpty()) {
@@ -78,7 +73,6 @@ public class ProfileService {
         if (friendship.getStatus() == FriendshipStatus.ACCEPTED) {
             return "FRIEND";
         } else if (friendship.getStatus() == FriendshipStatus.PENDING) {
-            // Check who sent the request
             if (friendship.getUserId().equals(currentUser.getId())) {
                 return "PENDING_OUTGOING";
             } else {
@@ -86,17 +80,17 @@ public class ProfileService {
             }
         }
 
-        // Defaults to NONE if the status is REJECTED
         return "NONE";
     }
 
-    private List<QuizAttemptDTO> fetchRecentAttempts(Long userId) {
+    private List<QuizAttemptDTO> fetchRecentAttempts(Integer userId) {
         return attemptRepository.findByUserIdAndIsPracticeFalseOrderByTakenAtDesc(userId).stream()
-                .map(a -> new QuizAttemptDTO(a.getId(), a.getUser().getUsername(), a.getQuizId(), a.getScore(), a.getTimeTakenSec(), a.getTakenAt()))
+                // Safely uses the updated QuizAttemptDTO constructor we created earlier
+                .map(QuizAttemptDTO::new)
                 .toList();
     }
 
-    private List<String> fetchAchievements(Long userId) {
+    private List<String> fetchAchievements(Integer userId) {
         return achievementRepository.findByUser_Id(userId).stream()
                 .map(UserAchievement::getAchievementType)
                 .toList();

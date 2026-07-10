@@ -17,13 +17,11 @@ public class QuizSummaryService {
         this.attemptRepository = attemptRepository;
     }
 
-    public QuizSummaryDTO getQuizSummary(Long quizId, String username) {
+    public QuizSummaryDTO getQuizSummary(Integer quizId, String username) {
         QuizSummaryDTO summary = new QuizSummaryDTO();
         var limitTen = PageRequest.of(0, 10);
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
 
-        // Assumes QuizAttemptDTO has a constructor that takes a QuizAttempt entity:
-        // public QuizAttemptDTO(QuizAttempt attempt) { ... }
         summary.setTopAllTime(attemptRepository.getTopPerformersAllTime(quizId, limitTen)
                 .stream().map(QuizAttemptDTO::new).toList());
 

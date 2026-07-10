@@ -28,9 +28,6 @@ public class FriendshipService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Initiates a friend request. Throws if a request is active, or if the sender was rejected.
-     */
     @Transactional
     public void sendFriendRequest(String currentUsername, String targetUsername) {
         User sender = userRepository.findByUsername(currentUsername)
@@ -48,11 +45,9 @@ public class FriendshipService {
             Friendship existing = existingOpt.get();
 
             if (existing.getStatus() == FriendshipStatus.REJECTED) {
-                // If the target user rejected the sender, block incoming spam attempts
                 if (existing.getUserId().equals(sender.getId())) {
                     throw new IllegalStateException("You cannot send a friend request to this user.");
                 } else {
-                    // If the sender changes their mind after rejecting a request, refresh it
                     friendshipRepository.delete(existing);
                     friendshipRepository.flush();
                 }
@@ -65,11 +60,8 @@ public class FriendshipService {
         friendshipRepository.save(friendship);
     }
 
-    /**
-     * Accepts a pending invitation.
-     */
     @Transactional
-    public void acceptFriendRequest(String currentUsername, Long requesterId) {
+    public void acceptFriendRequest(String currentUsername, Integer requesterId) {
         User currentUser = userRepository.findByUsername(currentUsername).orElseThrow();
         Friendship request = friendshipRepository.findFriendshipBetween(requesterId, currentUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Friend request context not found."));
@@ -86,11 +78,8 @@ public class FriendshipService {
         friendshipRepository.save(request);
     }
 
-    /**
-     * Flags a pending request as rejected to mitigate target spam.
-     */
     @Transactional
-    public void rejectFriendRequest(String currentUsername, Long requesterId) {
+    public void rejectFriendRequest(String currentUsername, Integer requesterId) {
         User currentUser = userRepository.findByUsername(currentUsername).orElseThrow();
         Friendship request = friendshipRepository.findFriendshipBetween(requesterId, currentUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Friend request context not found."));
@@ -107,11 +96,8 @@ public class FriendshipService {
         friendshipRepository.save(request);
     }
 
-    /**
-     * Terminate an established relationship or cancel a pending outgoing submission.
-     */
     @Transactional
-    public void removeFriend(String currentUsername, Long targetUserId) {
+    public void removeFriend(String currentUsername, Integer targetUserId) {
         User currentUser = userRepository.findByUsername(currentUsername).orElseThrow();
         Friendship friendship = friendshipRepository.findFriendshipBetween(currentUser.getId(), targetUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Target connection map does not exist."));
@@ -121,7 +107,7 @@ public class FriendshipService {
 
     public List<FriendshipResponseDTO> getAcceptedFriends(String username) {
         User currentUser = userRepository.findByUsername(username).orElseThrow();
-        List<Long> friendIds = friendshipRepository.findFriendsIdsByStatus(currentUser.getId(), FriendshipStatus.ACCEPTED);
+        List<Integer> friendIds = friendshipRepository.findFriendsIdsByStatus(currentUser.getId(), FriendshipStatus.ACCEPTED);
 
         return userRepository.findAllById(friendIds).stream()
                 .map(user -> new FriendshipResponseDTO(user.getId(), user.getUsername(), "ACCEPTED"))
@@ -130,7 +116,7 @@ public class FriendshipService {
 
     public List<FriendshipResponseDTO> getPendingRequests(String username) {
         User currentUser = userRepository.findByUsername(username).orElseThrow();
-        List<Long> requesterIds = friendshipRepository.findIncomingRequests(currentUser.getId(), FriendshipStatus.PENDING);
+        List<Integer> requesterIds = friendshipRepository.findIncomingRequests(currentUser.getId(), FriendshipStatus.PENDING);
 
         return userRepository.findAllById(requesterIds).stream()
                 .map(user -> new FriendshipResponseDTO(user.getId(), user.getUsername(), "PENDING"))

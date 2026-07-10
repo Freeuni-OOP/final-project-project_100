@@ -3,6 +3,7 @@ package com.freeuni.proj_100.quizwebsite.service;
 import com.freeuni.proj_100.quizwebsite.dto.AnnouncementDto;
 import com.freeuni.proj_100.quizwebsite.dto.CreateAnnouncementRequest;
 import com.freeuni.proj_100.quizwebsite.dto.SiteStatsDto;
+import com.freeuni.proj_100.quizwebsite.dto.UserSummaryDto;
 import com.freeuni.proj_100.quizwebsite.exception.AuthException;
 import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Announcement;
@@ -78,14 +79,30 @@ public class AdminService {
         announcement.setCreator(creator);
 
         Announcement saved = announcementRepo.save(announcement);
-        
+
         return announcementService.toDto(saved);
+    }
+
+    /**
+     *  Retrieves all user summaries
+     * @return
+     */
+    public List<UserSummaryDto> getAllUsers() {
+        return userRepo.findAll().stream()
+                .map(u -> new UserSummaryDto(
+                        u.getId(),
+                        u.getUsername(),
+                        u.getEmail(),
+                        u.isAdmin(),
+                        u.getCreatedAt()
+                ))
+                .toList();
     }
 
     /**
      * Deletes a user from the platform database by their unique ID.
      * <p>
-     * Guarded by a transaction. This action will fail intentionally if the target user 
+     * Guarded by a transaction. This action will fail intentionally if the target user
      * is also an administrator.
      * </p>
      *
@@ -93,7 +110,7 @@ public class AdminService {
      * @throws AuthException if the target user is not found, or if they hold administrative rights
      */
     @Transactional
-    public void deleteUser(Long userId) {
+    public void deleteUser(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new AuthException("User not found"));
 
@@ -111,7 +128,7 @@ public class AdminService {
      * @throws ResourceNotFoundException if no quiz matches the provided identifier
      */
     @Transactional
-    public void deleteQuiz(Long quizId) {
+    public void deleteQuiz(Integer quizId) {
         if (!quizRepo.existsById(quizId)) {
             throw new ResourceNotFoundException("Quiz not found");
         }
@@ -126,7 +143,7 @@ public class AdminService {
      * @throws ResourceNotFoundException if the quiz record does not exist
      */
     @Transactional
-    public void clearQuizHistory(Long quizId) {
+    public void clearQuizHistory(Integer quizId) {
         if (!quizRepo.existsById(quizId)) {
             throw new ResourceNotFoundException("Quiz not found");
         }
@@ -141,7 +158,7 @@ public class AdminService {
      * @throws AuthException if the user is not found, or is already configured as an administrator
      */
     @Transactional
-    public void promoteToAdmin(Long userId) {
+    public void promoteToAdmin(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new AuthException("User not found"));
 
