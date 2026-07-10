@@ -64,7 +64,9 @@ public class QuizService {
 
         List<QuestionEntity> questionsWithAnswers =
                 questionRepository.findQuestionsWithAnswers(quiz.getId());
-        quiz.setQuestions(questionsWithAnswers);
+
+        quiz.getQuestions().clear();
+        quiz.getQuestions().addAll(questionsWithAnswers);
 
         return Optional.of(quiz);
     }
