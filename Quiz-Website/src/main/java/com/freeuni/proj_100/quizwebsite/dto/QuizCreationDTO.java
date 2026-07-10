@@ -8,6 +8,7 @@ public class QuizCreationDTO {
     private boolean randomizeQuestions;
     private boolean singlePageLayout;
     private boolean immediateFeedback;
+    private boolean allowPractice;
     private List<QuestionCreationDTO> questions;
 
     public QuizCreationDTO() {}
@@ -27,6 +28,9 @@ public class QuizCreationDTO {
 
     public boolean isImmediateFeedback() { return immediateFeedback; }
     public void setImmediateFeedback(boolean immediateFeedback) { this.immediateFeedback = immediateFeedback; }
+
+    public boolean isAllowPractice() { return allowPractice; }
+    public void setAllowPractice(boolean allowPractice) { this.allowPractice = allowPractice; }
 
     public List<QuestionCreationDTO> getQuestions() { return questions; }
     public void setQuestions(List<QuestionCreationDTO> questions) { this.questions = questions; }

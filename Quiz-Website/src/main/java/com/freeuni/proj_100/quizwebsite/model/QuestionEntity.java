@@ -18,12 +18,6 @@ public class QuestionEntity {
     private int id;
 
     /**
-     * Foreign key referencing unique identifier of the quiz.
-     */
-    @Column(name = "quiz_id", nullable = false)
-    private int quizId;
-
-    /**
      * Discriminator string showing question type.
      */
     @Column(name = "q_type", nullable = false)
@@ -60,7 +54,7 @@ public class QuestionEntity {
      * Established as a Many-to-One relationship to support cascading persistence.
      */
     @ManyToOne
-    @JoinColumn(name = "quiz_id", insertable = false, updatable = false)
+    @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
     /**
@@ -80,16 +74,12 @@ public class QuestionEntity {
     public int getId() {return id;}
 
     /**
-     * Sets the foreign key linking this question to a quiz.
-     * @param quizId parent quiz identifier.
-     */
-    public void setQuizId(int quizId) { this.quizId = quizId; }
-
-    /**
      * Gets the foreign key linking this question to a quiz.
      * @return parent quiz identifier.
      */
-    public int getQuizId() { return quizId; }
+    public int getQuizId() {
+        return this.quiz != null ? this.quiz.getId() : 0;
+    }
 
     /**
      * Sets the type classification identifier for this question.
@@ -154,16 +144,12 @@ public class QuestionEntity {
     }
 
     /**
-     * Backward-compatible setter for older code using database-style naming.
-     * @param quiz_id parent quiz identifier.
-     */
-    public void setQuiz_id(int quiz_id) { this.quizId = quiz_id; }
-
-    /**
      * Backward-compatible getter for older code using database-style naming.
      * @return parent quiz identifier.
      */
-    public int getQuiz_id() { return quizId; }
+    public int getQuiz_id() {
+        return this.quiz != null ? this.quiz.getId() : 0;
+    }
 
     /**
      * Backward-compatible setter for older code using database-style naming.
