@@ -9,30 +9,42 @@ import Layout from './components/Layout.jsx'
 import QuizCreatePage from "./pages/QuizCreatePage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 
+// --- Your New Social & Summary Pages ---
+import ProfilePage from "./pages/ProfilePage.jsx";
+import FriendsPage from "./pages/FriendsPage.jsx";
+import QuizSummaryPage from "./pages/QuizSummaryPage.jsx";
+
 function App() {
-  return (
-    <AuthProvider>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
 
-                <Route element={<PrivateRoute />}>
-                    <Route element={<Layout />}>
-                        <Route path="/home" element={<HomePage />} />
-                        <Route path="/quizzes/create" element={<QuizCreatePage />} />
+                    <Route element={<PrivateRoute />}>
+                        <Route element={<Layout />}>
+                            {/* Teammate's Existing Routes */}
+                            <Route path="/home" element={<HomePage />} />
+                            <Route path="/quizzes/create" element={<QuizCreatePage />} />
 
-                        <Route element={<AdminRoute />}>
-                            <Route path="/admin" element={<AdminPage />} />
+                            {/* Your New Social & Summary Routes */}
+                            <Route path="/profile/:username" element={<ProfilePage />} />
+                            <Route path="/friends" element={<FriendsPage />} />
+                            <Route path="/quizzes/:quizId/summary" element={<QuizSummaryPage />} />
+
+                            {/* Teammate's Admin Routes */}
+                            <Route element={<AdminRoute />}>
+                                <Route path="/admin" element={<AdminPage />} />
+                            </Route>
                         </Route>
                     </Route>
-                </Route>
 
-                <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-        </BrowserRouter>
-    </AuthProvider>
-  )
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    )
 }
 
 export default App

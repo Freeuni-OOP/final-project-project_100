@@ -7,6 +7,7 @@ import java.util.List;
  * Data Transfer Object for aggregating and securely transmitting complete user profiles.
  */
 public record ProfileResponseDTO(
+        Integer userId,
         String username,
         String email,
         boolean isAdmin,
