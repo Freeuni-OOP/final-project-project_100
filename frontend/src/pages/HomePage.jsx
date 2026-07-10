@@ -7,13 +7,18 @@ import styles from '../styles/homepage.module.css';
 export default function HomePage() {
     const { user } = useAuth();
     const [announcements, setAnnouncements] = useState([]);
+    const [recentQuizzes, setRecentQuizzes] = useState([])
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const announcementsRes = await api.get('/announcements');
-                setAnnouncements(announcementsRes.data);
+                const [announcementsRes, quizzesRes] = await Promise.all([
+                    api.get('/announcements'),
+                    api.get('/quizzes/recent')
+                ])
+                setAnnouncements(announcementsRes.data)
+                setRecentQuizzes(quizzesRes.data)
             } catch (err) {
                 console.error('Failed to load homepage data', err);
             } finally {
@@ -47,17 +52,36 @@ export default function HomePage() {
 
             <section className={styles.section}>
                 <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>Welcome back, {user?.username}</h2>
+                    <h2 className={styles.sectionTitle}>Recent Quizzes</h2>
                     <Link to="/quizzes/create" className={styles.createBtn}>
                         + Create Quiz
                     </Link>
                 </div>
-                <p className={styles.placeholder}>
-                    Popular quizzes and your recent activity will appear here once
-                    the quiz engine is implemented.
-                </p>
-            </section>
 
+                {recentQuizzes.length === 0
+                    ? <p className={styles.placeholder}>No quizzes yet — be the first to create one!</p>
+                    : <div className={styles.quizGrid}>
+                        {recentQuizzes.map(q => (
+                            <Link
+                                key={q.id}
+                                to={`/quizzes/${q.id}`}
+                                className={styles.quizCard}
+                            >
+                                <div className={styles.quizCardTitle}>{q.title}</div>
+                                <div className={styles.quizCardMeta}>
+                                    {q.questionCount} questions · by {q.createdBy}
+                                </div>
+                                {q.description && (
+                                    <div className={styles.quizCardDesc}>{q.description}</div>
+                                )}
+                                <div className={styles.quizCardDate}>
+                                    {new Date(q.createdAt).toLocaleDateString()}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                }
+            </section>
         </div>
     );
 }

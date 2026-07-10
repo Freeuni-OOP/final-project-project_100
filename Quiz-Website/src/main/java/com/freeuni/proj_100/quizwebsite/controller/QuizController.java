@@ -1,6 +1,7 @@
 package com.freeuni.proj_100.quizwebsite.controller;
 
 import com.freeuni.proj_100.quizwebsite.dto.QuizCreationDTO;
+import com.freeuni.proj_100.quizwebsite.dto.QuizSummaryDto;
 import com.freeuni.proj_100.quizwebsite.exception.ResourceNotFoundException;
 import com.freeuni.proj_100.quizwebsite.model.Quiz;
 import com.freeuni.proj_100.quizwebsite.model.User;
@@ -62,5 +63,10 @@ public class QuizController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Quiz>> getQuizzesByCreator(@PathVariable Integer userId) {
         return ResponseEntity.ok(quizService.getQuizzesByCreator(userId));
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<List<QuizSummaryDto>> getRecentQuizzes() {
+        return ResponseEntity.ok(quizService.getRecentQuizzes());
     }
 }
