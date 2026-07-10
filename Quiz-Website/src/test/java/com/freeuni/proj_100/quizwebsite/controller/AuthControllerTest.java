@@ -120,14 +120,14 @@ public class AuthControllerTest {
 
         assertEquals(exception1.getMessage(), exception2.getMessage());
     }
-
+    
     @Test
     void meShouldReturnUserDetailsWhenValid() {
         User mockUser = new User();
         mockUser.setId(1);
         mockUser.setUsername("alice");
         mockUser.setEmail("alice@example.com");
-
+        
         when(authService.getUserByUsername("alice")).thenReturn(mockUser);
 
         ResponseEntity<Map<String, Object>> response = authController.me("alice");
@@ -147,7 +147,7 @@ public class AuthControllerTest {
         AuthException exception = assertThrows(AuthException.class, () -> {
             authController.me("unknown");
         });
-
+        
         assertEquals("User not found", exception.getMessage());
     }
 }
