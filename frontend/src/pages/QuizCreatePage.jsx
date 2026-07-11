@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from '../styles/quizCreate.module.css';
 import { useNavigate } from 'react-router-dom';
+import api from '../api/axios.js'
 
 const STEPS = {
     0: 'Basic Info & Options',
@@ -161,7 +162,7 @@ export default function QuizCreatePage() {
 
     const handleSubmit = async () => {
         try {
-            await axiosInstance.post('/quizzes/create', quizData);
+            await api.post('/quizzes/create', quizData);
             navigate('/home');
         } catch (error) {
             console.error('Error saving quiz:', error);
