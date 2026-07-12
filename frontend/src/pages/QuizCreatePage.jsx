@@ -297,7 +297,7 @@ export default function QuizCreatePage() {
                                 }))}
                             >
                                 <option value="multiple-choice">Multiple Choice (Radio Buttons)</option>
-                                <option value="question-response">Question-Response (Standard Text)</option>
+                                <option value="standard">Question-Response (Standard Text)</option>
                                 <option value="fill-in-the-blank">Fill in the Blank</option>
                                 <option value="picture-response">Picture-Response Questions</option>
                             </select>

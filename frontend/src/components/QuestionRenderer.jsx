@@ -2,7 +2,7 @@ import styles from '../styles/questionRenderer.module.css';
 
 export default function QuestionRenderer({ question, value, onChange, disabled }) {
   switch (question.qType) {
-    case 'STANDARD':
+    case 'standard':
     case 'fill-in-the-blank':
       return (
         <input
@@ -58,6 +58,6 @@ export default function QuestionRenderer({ question, value, onChange, disabled }
       );
 
     default:
-      return <p className={styles.error}>Unsupported question type</p>;
+      return <p className={styles.error}>Unsupported question type: {question.qType}</p>;
   }
 }
